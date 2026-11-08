@@ -1,0 +1,48 @@
+# HealPath Project Rules & Branding Context
+
+## Project Role
+You are developing marketing funnels, landing pages, and web applications for **HealPath** (`https://healpath.care/`), Egypt's leading digital primary healthcare platform.
+
+## Brand Identity Essentials
+- **Brand Name**: HealPath (Healthcare)
+- **Tagline**: *"We Don't Heal Bodies — We Heal Paths"*
+- **Mission**: *"Empowering Lives through Primary Care"*
+- **Vision**: *"Revolutionizing Primary Care for a Digital Era"*
+- **Primary Typeface**: `Plus Jakarta Sans` (weights: 400, 500, 600, 700, 800)
+- **Primary Colors**:
+  - Deep Navy: `#00003F`
+  - Primary Dark Blue: `#0D1B4C`
+  - Royal Blue: `#0D47A1`
+  - Accent/Action Blue: `#3B82F6` & `#2196F3`
+  - Cyan Accent: `#00BCD4`
+  - Mint Accent: `#A1F1C6`
+  - Background Neutral: `#F8FAFC` & `#FFFFFF`
+  - Dark Headings / Text: `#0D1B4C` & `#0F172A`
+  - Body Text: `#4B5563` & `#666666`
+
+## Core Audience Segments & Funnels
+1. **Individuals & Families**: 24/7 tele-triage, employed Board-Certified family physicians, appointments in < 1 hour, chronic illness tracking.
+2. **Students (`HealPass`)**: Affordable subscription with unlimited family doctor visits, discounted therapy/mental health, discounted labs, scans, and partner pharmacies.
+3. **Businesses & Employers**: Corporate wellness, on-site doctor clinics, claims reduction, reduced absenteeism, up to 45% chronic care cost savings.
+4. **Healthcare Payers & Insurers**: Risk mitigation, CCM (Chronic Care Management), 25% improved outcomes vs. baseline.
+
+## Trust & Compliance Accreditations
+Always highlight where appropriate:
+- Employed Board-Certified Egyptian Physicians
+- GAHAR Compliance (Egyptian Healthcare Standards)
+- URAC Telehealth Accreditation
+- HIPAA Compliant Platform
+- CMS Medicare CCM (Chronic Care Management) Guideline alignment
+
+## Official Operational Contact Info
+- **Main Website**: https://healpath.care
+- **Patient Portal**: http://patient.healpath.care
+- **WhatsApp & Phone**: `+20 101 900 3440` (+201019003440)
+- **Customer Care**: `customercare@healpath.care`
+- **Partnerships**: `partnerships@healpath.care`
+- **Headquarters**: 43 Al Gazaer Square, El Basatin, Maadi, Cairo, Egypt
+- **Other Clinics**: New Cairo (Operational), 6th October & Downtown Cairo (Coming Soon)
+
+## Design System Files
+- `BRAND_GUIDELINES.md`: Complete branding specifications, color codes, typography scale, UI components, and copywriting rules.
+- `healpath-theme.css`: Ready-to-use CSS tokens and UI components.

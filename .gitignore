@@ -1,0 +1,9 @@
+# Operating System
+.DS_Store
+Thumbs.db
+
+# Temporary scrape files
+site_dump.html
+theme_css_vars.css
+custom_styles_*.css
+extracted_copy.txt
