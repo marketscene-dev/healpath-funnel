@@ -24,163 +24,163 @@ document.addEventListener('DOMContentLoaded', function () {
   const questions = [
     {
       id: 'beneficiary',
-      kicker: 'STEP 1: BENEFICIARY PROFILE',
-      title: 'Who is this medical care plan primarily for?',
-      subtitle: 'Select the option that reflects the primary person or group seeking care.',
+      kicker: 'QUESTION 1 OF 6',
+      title: 'Who is this medical care plan for?',
+      subtitle: 'Select who will be receiving care.',
       options: [
         {
           title: 'Myself (Individual)',
-          desc: 'Personal primary care, tele-triage, and continuous medical oversight.',
+          desc: 'Primary care, doctor visits, and personal health.',
           weight: { general: 2, chronic: 1 }
         },
         {
-          title: 'My Family (Spouse & Children)',
-          desc: 'Unified household coverage with pediatric and family doctor access.',
+          title: 'My Family',
+          desc: 'Comprehensive coverage for spouse and children.',
           weight: { family: 4, general: 1 }
         },
         {
-          title: 'University or College Student',
-          desc: 'Affordable academic health coverage with labs, scans, and therapy access.',
+          title: 'University Student',
+          desc: 'Affordable student plan with lab and scan discounts.',
           weight: { student: 5 }
         },
         {
-          title: 'Business or Employee Workforce',
-          desc: 'Corporate wellness programs, on-site doctors, and health dashboards.',
+          title: 'Company / Employees',
+          desc: 'Workplace health coverage and corporate clinics.',
           weight: { corporate: 5 }
         }
       ]
     },
     {
       id: 'primary_goal',
-      kicker: 'STEP 2: CLINICAL OBJECTIVES',
-      title: 'What is your primary healthcare objective?',
-      subtitle: 'Identify the main clinical outcome you wish to achieve.',
+      kicker: 'QUESTION 2 OF 6',
+      title: 'What is your main health priority?',
+      subtitle: 'Choose your primary care goal.',
       options: [
         {
-          title: 'Managing Chronic Conditions & Routine Refills',
-          desc: 'Ongoing management for conditions like diabetes, hypertension, or thyroid.',
+          title: 'Chronic Care & Medication Refills',
+          desc: 'Ongoing management and prescription refills.',
           weight: { chronic: 4 }
         },
         {
-          title: 'Immediate On-Demand Doctor Consultations (< 1 Hour)',
-          desc: 'Fast 24/7 tele-triage and virtual visits for acute symptoms.',
+          title: 'Fast On-Demand Doctor Visits',
+          desc: '24/7 tele-triage with appointments in under 1 hour.',
           weight: { general: 3, family: 1 }
         },
         {
-          title: 'Preventative Wellness & Lifestyle Oversight',
-          desc: 'Routine screening, nutrition planning, and holistic coaching.',
+          title: 'Routine Checkups & Wellness',
+          desc: 'Preventative screening and lifestyle coaching.',
           weight: { general: 2, family: 2 }
         },
         {
-          title: 'Affordable Student Care with Diagnostic Discounts',
-          desc: 'Unlimited primary care access with discounts on labs, scans, and medications.',
+          title: 'Student Care & Test Discounts',
+          desc: 'Low-cost doctor visits, mental health, and labs.',
           weight: { student: 4 }
         }
       ]
     },
     {
       id: 'chronic_needs',
-      kicker: 'STEP 3: MEDICATION & CONDITION MANAGEMENT',
-      title: 'Do you manage recurring conditions requiring continuous medication?',
-      subtitle: 'HealPath connects clinical pharmacists and physicians for refill safety.',
+      kicker: 'QUESTION 3 OF 6',
+      title: 'Do you take continuous medications?',
+      subtitle: 'For conditions like blood pressure, diabetes, or thyroid.',
       options: [
         {
-          title: 'Yes, Requires Regular Medication Refills',
-          desc: 'Need continuous prescription renewal, home delivery, and pharmacist reviews.',
+          title: 'Yes, Regular Refills Needed',
+          desc: 'Prescription renewal with pharmacist oversight.',
           weight: { chronic: 4 }
         },
         {
-          title: 'Yes, Active Chronic Conditions Requiring Care Coordination',
-          desc: 'Quarterly doctor consultations and monthly clinical pharmacist monitoring.',
+          title: 'Yes, Multiple Conditions',
+          desc: 'Quarterly doctor consultations and care coordination.',
           weight: { chronic: 5 }
         },
         {
-          title: 'No Chronic Conditions',
-          desc: 'Focused on urgent symptom evaluation and seasonal preventative care.',
+          title: 'No Regular Medication',
+          desc: 'General primary care and urgent visits only.',
           weight: { general: 3, family: 2 }
         },
         {
-          title: 'Student Basic Wellness Inquiries',
-          desc: 'General health guidance, academic stress support, and routine checks.',
+          title: 'As-Needed / Seasonal Care',
+          desc: 'Occasional consultations and health advice.',
           weight: { student: 3 }
         }
       ]
     },
     {
       id: 'delivery_mode',
-      kicker: 'STEP 4: CARE DELIVERY PREFERENCE',
-      title: 'How do you prefer to receive medical consultations?',
-      subtitle: 'Choose your desired combination of virtual and on-site clinical care.',
+      kicker: 'QUESTION 4 OF 6',
+      title: 'How do you want to see your doctor?',
+      subtitle: 'Select your preferred consultation method.',
       options: [
         {
-          title: 'Hybrid Care: Virtual Tele-Triage with Clinic Visits',
-          desc: 'Fast digital access plus in-person consultations at Maadi or New Cairo.',
+          title: 'Hybrid (Online + Clinic Visits)',
+          desc: '24/7 tele-triage plus visits to Maadi or New Cairo.',
           weight: { general: 3, chronic: 2, family: 2 }
         },
         {
-          title: 'Digital-First: Fast 24/7 Teleconsultations',
-          desc: 'Immediate video and tele-triage appointments from the comfort of home.',
+          title: '100% Online Consultations',
+          desc: 'Fast video and phone calls from home.',
           weight: { general: 3, student: 2 }
         },
         {
-          title: 'Physical Clinic Focus: Direct In-Person Care',
-          desc: 'Prefer visits to our main clinics at 43 Al Gazaer Square, Maadi or New Cairo.',
+          title: 'In-Person Clinic Visits',
+          desc: 'Direct consultations at our Cairo medical clinics.',
           weight: { family: 2, chronic: 2 }
         },
         {
-          title: 'Workplace Clinic: On-Site Corporate Medical Staff',
-          desc: 'Doctor on-site visits directly at corporate offices.',
+          title: 'Workplace Doctor on Site',
+          desc: 'Dedicated on-site clinic for your organization.',
           weight: { corporate: 4 }
         }
       ]
     },
     {
       id: 'coordination',
-      kicker: 'STEP 5: MULTIDISCIPLINARY CARE COORDINATION',
-      title: 'Do you require coordination between doctors and specialists?',
-      subtitle: 'Our proprietary EHR unifies family doctors, consultants, and pharmacists.',
+      kicker: 'QUESTION 5 OF 6',
+      title: 'Do you need care coordination?',
+      subtitle: 'Connecting doctors, clinical pharmacists, and specialists.',
       options: [
         {
-          title: 'Full Multidisciplinary Coordination (Physicians + Pharmacists)',
-          desc: 'Structured chronic care plan following CMS clinical guidelines.',
+          title: 'Doctors + Clinical Pharmacists',
+          desc: 'Coordinated chronic disease management.',
           weight: { chronic: 4 }
         },
         {
-          title: 'Family Physician Care with Specialty Referrals on Demand',
-          desc: 'Family doctor serves as personal coordinator for all medical needs.',
+          title: 'Family Physician Oversight',
+          desc: 'One dedicated doctor managing all your care.',
           weight: { family: 3, general: 2 }
         },
         {
-          title: 'Student Health Network with Mental Wellness & Nutrition',
-          desc: 'Subsidized access to psychologists, nutritionists, and lab partners.',
+          title: 'Student Wellness Network',
+          desc: 'Doctor visits plus discounted therapy and scans.',
           weight: { student: 4 }
         },
         {
-          title: 'Corporate Employee Health Analytics & Coordination',
-          desc: 'Centralized health reporting and employer utilization dashboards.',
+          title: 'Corporate Health Dashboard',
+          desc: 'Employee health analytics and utilization reports.',
           weight: { corporate: 4 }
         }
       ]
     },
     {
       id: 'timeline',
-      kicker: 'STEP 6: ACTIVATION TIMELINE',
-      title: 'When would you like your medical care plan to begin?',
-      subtitle: 'All HealPath subscriptions activate immediately upon registration.',
+      kicker: 'QUESTION 6 OF 6',
+      title: 'When do you want your plan to start?',
+      subtitle: 'Select your ideal start date.',
       options: [
         {
-          title: 'Immediate Care (Need consultation or refill this week)',
-          desc: 'Access employed Board-Certified physicians within one hour of signup.',
+          title: 'Immediately',
+          desc: 'Need a doctor consultation or refill this week.',
           weight: { general: 1, chronic: 1 }
         },
         {
-          title: 'Within the Next 30 Days',
-          desc: 'Setting up structured healthcare coverage for the coming month.',
+          title: 'Within the Next Month',
+          desc: 'Setting up upcoming healthcare coverage.',
           weight: { general: 1, family: 1 }
         },
         {
-          title: 'Planning for Upcoming Semester or Policy Renewal',
-          desc: 'Evaluating healthcare options for institutional or academic cycles.',
+          title: 'Just Comparing Options',
+          desc: 'Exploring healthcare plans for the future.',
           weight: { student: 1, corporate: 1 }
         }
       ]
