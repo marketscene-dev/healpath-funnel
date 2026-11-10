@@ -1,266 +1,90 @@
 /* ===============================================================
-   HEALPATH DESIGN SYSTEM & CSS TOKENS
-   Version: 2.0 (Official Brand Match for healpath.care)
+   HEALPATH DESIGN TOKENS
+   Matched to https://healpath.the-marketscene.com/pricing/
+   Font: Poppins · Navy #071847 · Teal #11AFCB / #079AB3
    =============================================================== */
 
-@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
-
 :root {
-  /* Brand Primary Colors */
-  --hp-primary-navy: #00003F;
-  --hp-primary-blue: #0D1B4C;
-  --hp-primary-dark: #0D47A1;
-  --hp-primary-light: #1565C0;
-  
-  /* Brand Accent & Action Colors */
-  --hp-accent-blue: #2196F3;
-  --hp-electric-blue: #0000FE;
-  --hp-action-blue: #3B82F6;
-  --hp-accent-cyan: #00BCD4;
-  --hp-accent-mint: #A1F1C6;
-  --hp-accent-green: #10B981;
-  --hp-accent-orange: #FF7F11;
-  --hp-error-red: #EF4444;
+  /* Brand navy */
+  --hp-navy-900: #00003F;        /* top bar */
+  --hp-navy-850: #01013D;
+  --hp-navy-800: #051549;
+  --hp-navy: #071847;            /* headings & text */
+  --hp-blue-700: #0D438C;
+  --hp-blue-600: #0C4C9E;
 
-  /* Neutrals & Surfaces */
+  /* Brand teal (CTA) */
+  --hp-teal: #11AFCB;
+  --hp-teal-dark: #079AB3;
+  --hp-teal-soft: #DFF7FB;
+  --hp-teal-tint: rgba(17, 175, 203, 0.10);
+
+  /* Status */
+  --hp-ok: #2E9E62;
+  --hp-ok-bg: #E6F6EC;
+  --hp-info-bg: #DDF4FA;
+  --hp-no: #C0392B;
+  --hp-no-bg: #FCE8E8;
+
+  /* Neutrals */
   --hp-white: #FFFFFF;
-  --hp-bg-light: #F8FAFC;
-  --hp-bg-lighter: #F5F7FA;
-  --hp-border-light: #E2E8F0;
-  --hp-border-soft: #F0F0F0;
+  --hp-bg: #F3F8FB;
+  --hp-surface-soft: #F3F8FB;
+  --hp-border: #E0E7EF;
+  --hp-muted: #667085;
+  --hp-body: #4A5468;
 
-  /* Typography Colors */
-  --hp-text-dark: #0F172A;
-  --hp-text-headings: #0D1B4C;
-  --hp-text-body: #4B5563;
-  --hp-text-muted: #6C757D;
-  --hp-text-light: #94A3B8;
+  /* Gradients */
+  --hp-grad-cta: linear-gradient(135deg, #11AFCB, #079AB3);
+  --hp-grad-sme: linear-gradient(135deg, #051549, #0D438C);
+  --hp-grad-student: linear-gradient(135deg, #01013D, #0C4C9E);
 
-  /* Typography Font Family */
-  --hp-font-family: 'Plus Jakarta Sans', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  /* Type */
+  --hp-font: 'Poppins', sans-serif;
 
   /* Radii */
-  --hp-radius-sm: 10px;
-  --hp-radius-md: 12px;
-  --hp-radius-lg: 20px;
-  --hp-radius-xl: 24px;
-  --hp-radius-pill: 50px;
+  --hp-r-sm: 14px;
+  --hp-r-md: 18px;
+  --hp-r-lg: 20px;
+  --hp-r-pill: 999px;
 
-  /* Elevation Shadows */
-  --hp-shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.08);
-  --hp-shadow-md: 0 8px 25px rgba(0, 0, 0, 0.10);
-  --hp-shadow-lg: 0 15px 40px rgba(13, 71, 161, 0.15);
-  --hp-shadow-glow: 0 8px 24px rgba(59, 130, 246, 0.35);
+  /* Shadows */
+  --hp-shadow-card: 0 12px 30px rgba(5, 21, 73, 0.08);
+  --hp-shadow-lg: 0 20px 55px rgba(5, 21, 73, 0.10);
+  --hp-shadow-cta: 0 12px 26px rgba(17, 175, 203, 0.24);
+  --hp-shadow-pill: 0 8px 18px rgba(17, 175, 203, 0.18);
 
-  /* Transitions */
-  --hp-transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  --hp-transition-fast: all 0.2s ease;
+  --hp-ease: cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-/* Base Document Styles */
+*, *::before, *::after { box-sizing: border-box; }
+
+html { -webkit-text-size-adjust: 100%; }
+
 body {
-  font-family: var(--hp-font-family);
-  color: var(--hp-text-body);
-  background-color: var(--hp-bg-light);
-  line-height: 1.7;
   margin: 0;
-  padding: 0;
+  font-family: var(--hp-font);
+  font-size: 15px;
+  line-height: 1.65;
+  color: var(--hp-body);
+  background: var(--hp-bg);
   -webkit-font-smoothing: antialiased;
 }
 
-h1, h2, h3, h4, h5, h6 {
-  font-family: var(--hp-font-family);
-  color: var(--hp-text-headings);
-  font-weight: 700;
-  line-height: 1.25;
-  margin-top: 0;
-}
-
-/* Typography Underline Accent */
-.section-title-with-underline {
-  color: #1A237E;
-  position: relative;
-  display: inline-block;
-  padding-bottom: 12px;
-  font-size: 2.2rem;
-  font-weight: 700;
-}
-
-.section-title-with-underline::after {
-  content: '';
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  width: 60px;
-  height: 4px;
-  background: linear-gradient(135deg, var(--hp-accent-blue), var(--hp-primary-light));
-  border-radius: 2px;
-}
-
-.section-title-with-underline.text-center::after {
-  left: 50%;
-  transform: translateX(-50%);
-}
-
-.section-subtitle {
-  font-size: 1.15rem;
-  color: var(--hp-text-muted);
-  max-width: 680px;
-  margin: 15px auto 30px;
-  line-height: 1.6;
-}
-
-/* Buttons */
-.btn-hp-hero {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  padding: 18px 45px;
-  background: var(--hp-white);
-  color: var(--hp-primary-blue);
-  font-size: 1.1rem;
-  font-weight: 700;
-  text-decoration: none;
-  border-radius: var(--hp-radius-pill);
-  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
-  transition: var(--hp-transition);
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-  border: none;
-  cursor: pointer;
-}
-
-.btn-hp-hero:hover {
-  transform: translateY(-3px);
-  box-shadow: 0 12px 35px rgba(0, 0, 0, 0.3);
-  background: #f8fafc;
-}
-
-.btn-hp-primary {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  padding: 14px 32px;
-  font-size: 1.05rem;
-  font-weight: 700;
-  color: var(--hp-white);
-  background: linear-gradient(135deg, var(--hp-action-blue) 0%, #1E40AF 100%);
-  border: none;
-  border-radius: var(--hp-radius-md);
-  cursor: pointer;
-  transition: var(--hp-transition);
-  box-shadow: var(--hp-shadow-glow);
-  text-decoration: none;
-}
-
-.btn-hp-primary:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 12px 32px rgba(59, 130, 246, 0.45);
-  background: linear-gradient(135deg, #1E40AF 0%, #1E3A8A 100%);
-}
-
-.btn-hp-outline {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  padding: 13px 30px;
-  font-size: 1.05rem;
-  font-weight: 700;
-  color: var(--hp-primary-dark);
-  background: transparent;
-  border: 2px solid var(--hp-primary-dark);
-  border-radius: var(--hp-radius-md);
-  cursor: pointer;
-  transition: var(--hp-transition);
-  text-decoration: none;
-}
-
-.btn-hp-outline:hover {
-  background: var(--hp-primary-dark);
-  color: var(--hp-white);
-}
-
-/* Card Component */
-.hp-card {
-  background: var(--hp-white);
-  border-radius: var(--hp-radius-md);
-  padding: 32px 28px;
-  box-shadow: var(--hp-shadow-sm);
-  border: 1px solid var(--hp-border-soft);
-  transition: var(--hp-transition);
-  position: relative;
-}
-
-.hp-card:hover {
-  transform: translateY(-6px);
-  box-shadow: var(--hp-shadow-lg);
-  border-color: rgba(13, 71, 161, 0.25);
-}
-
-/* Icon Bubble */
-.hp-icon-bubble {
-  width: 70px;
-  height: 70px;
-  background: linear-gradient(135deg, var(--hp-primary-blue) 0%, var(--hp-primary-light) 100%);
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: var(--hp-white);
-  margin-bottom: 20px;
-  box-shadow: 0 8px 20px rgba(13, 71, 161, 0.25);
-  transition: var(--hp-transition);
-}
-
-.hp-card:hover .hp-icon-bubble {
-  transform: scale(1.08) rotate(4deg);
-}
-
-/* Process Step */
-.hp-step-badge {
-  width: 70px;
-  height: 70px;
-  border-radius: 50%;
-  background: linear-gradient(135deg, var(--hp-primary-blue) 0%, var(--hp-primary-light) 100%);
-  color: var(--hp-white);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 1.8rem;
+h1, h2, h3, h4 {
+  margin: 0;
+  font-family: var(--hp-font);
+  color: var(--hp-navy);
   font-weight: 800;
-  box-shadow: 0 8px 20px rgba(13, 71, 161, 0.3);
+  letter-spacing: -0.035em;
+  line-height: 1.15;
 }
 
-/* Form Styles */
-.hp-form-container {
-  background: var(--hp-white);
-  border-radius: var(--hp-radius-lg);
-  padding: 40px;
-  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.08);
-}
+p { margin: 0; }
+a { color: inherit; }
+img { max-width: 100%; display: block; }
 
-.hp-form-label {
-  font-size: 0.95rem;
-  font-weight: 600;
-  color: var(--hp-text-dark);
-  margin-bottom: 8px;
-  display: block;
-}
-
-.hp-form-input, .hp-form-select {
-  width: 100%;
-  padding: 14px 18px;
-  font-family: var(--hp-font-family);
-  font-size: 1rem;
-  border: 2px solid var(--hp-border-light);
-  border-radius: var(--hp-radius-sm);
-  background: var(--hp-white);
-  color: var(--hp-text-dark);
-  transition: var(--hp-transition);
-  outline: none;
-}
-
-.hp-form-input:focus, .hp-form-select:focus {
-  border-color: var(--hp-action-blue);
-  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.12);
+.sr-only {
+  position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px;
+  overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; border: 0;
 }
