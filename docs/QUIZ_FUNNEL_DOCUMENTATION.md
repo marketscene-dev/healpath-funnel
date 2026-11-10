@@ -8,9 +8,9 @@ customer to the same CTA link the website uses: `https://patient.healpath.care/`
 | File | Purpose |
 | --- | --- |
 | `index.html` | Page shell: top bar, header, intro, quiz, loading, result |
-| `quiz-app.js` | Questions, scoring, bundle data, result rendering |
-| `healpath-theme.css` | Brand tokens copied from the live site (Poppins, navy, teal) |
-| `quiz-styles.css` | Components (option cards, pricing cards, SME cards, student card) |
+| `assets/js/quiz-app.js` | Questions, scoring, bundle data, result rendering |
+| `assets/css/healpath-theme.css` | Brand tokens copied from the live site (Poppins, navy, teal) |
+| `assets/css/quiz-styles.css` | Components (option cards, pricing cards, SME cards, student card) |
 
 ## Bundles (from the pricing page)
 | Key | Bundle | Price | CTA |

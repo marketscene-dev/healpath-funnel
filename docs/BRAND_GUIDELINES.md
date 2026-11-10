@@ -59,16 +59,16 @@ HealPath is an Egyptian digital healthcare platform redefining primary and conti
 
 ## 3. Typography System
 
-### Primary Typeface: **Plus Jakarta Sans**
+### Primary Typeface: **Poppins**
 - **Google Font Import**:
   ```html
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   ```
 - **CSS Font Family**:
   ```css
-  font-family: 'Plus Jakarta Sans', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  font-family: 'Poppins', sans-serif;
   ```
 - **Fallback / Alternative**: `Poppins`, `sans-serif` (theme base)
 

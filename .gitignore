@@ -7,3 +7,7 @@ site_dump.html
 theme_css_vars.css
 custom_styles_*.css
 extracted_copy.txt
+
+# Local tooling
+.claude/
+graphify-out/

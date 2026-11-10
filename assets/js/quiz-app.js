@@ -789,9 +789,17 @@
     }
   });
 
-  $('btn-retake').addEventListener('click', () => {
+  function restart() {
     state.index = 0;
     state.answers = {};
     show('step-intro');
+  }
+
+  $('btn-retake').addEventListener('click', restart);
+
+  // Logo click restarts the quiz without reloading the page
+  $('logo-home').addEventListener('click', (e) => {
+    e.preventDefault();
+    restart();
   });
 })();

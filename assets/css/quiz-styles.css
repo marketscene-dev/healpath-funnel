@@ -50,8 +50,9 @@
 .hp-topbar a:hover { color: var(--hp-teal); }
 
 .hp-header { background: #fff; box-shadow: 0 8px 24px rgba(5, 21, 73, .05); position: relative; z-index: 2; }
-.hp-header__inner { display: flex; align-items: center; justify-content: space-between; gap: 16px; min-height: 78px; }
-.hp-header__logo img { height: 40px; width: auto; }
+.hp-header__inner { display: flex; align-items: center; justify-content: space-between; gap: 16px; min-height: 92px; }
+.hp-header__logo { display: inline-flex; }
+.hp-header__logo img { height: 54px; width: auto; }
 .hp-header__link {
   display: inline-flex; align-items: center; gap: 8px; min-height: 40px; padding: 0 17px;
   font-size: 12px; font-weight: 700; color: var(--hp-navy); text-decoration: none;
@@ -349,8 +350,8 @@
   .hp-why__list { grid-template-columns: 1fr; padding: 18px 0 0; border-left: 0; border-top: 1px solid var(--hp-border); }
   .hp-alt { flex-direction: column; align-items: flex-start; padding: 20px; }
   .hp-alt .hp-btn { width: 100%; }
-  .hp-header__inner { min-height: 66px; }
-  .hp-header__logo img { height: 32px; }
+  .hp-header__inner { min-height: 76px; }
+  .hp-header__logo img { height: 42px; }
   .hp-topbar a { font-size: 12px; }
 }
 

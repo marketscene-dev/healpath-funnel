@@ -8,7 +8,7 @@ You are developing marketing funnels, landing pages, and web applications for **
 - **Tagline**: *"We Don't Heal Bodies — We Heal Paths"*
 - **Mission**: *"Empowering Lives through Primary Care"*
 - **Vision**: *"Revolutionizing Primary Care for a Digital Era"*
-- **Primary Typeface**: `Plus Jakarta Sans` (weights: 400, 500, 600, 700, 800)
+- **Primary Typeface**: `Poppins` (weights: 400, 500, 600, 700, 800), as used on https://healpath.the-marketscene.com/
 - **Primary Colors**:
   - Deep Navy: `#00003F`
   - Primary Dark Blue: `#0D1B4C`
@@ -44,5 +44,5 @@ Always highlight where appropriate:
 - **Other Clinics**: New Cairo (Operational), 6th October & Downtown Cairo (Coming Soon)
 
 ## Design System Files
-- `BRAND_GUIDELINES.md`: Complete branding specifications, color codes, typography scale, UI components, and copywriting rules.
-- `healpath-theme.css`: Ready-to-use CSS tokens and UI components.
+- `docs/BRAND_GUIDELINES.md`: Complete branding specifications, color codes, typography scale, UI components, and copywriting rules.
+- `assets/css/healpath-theme.css`: Ready-to-use CSS tokens and UI components.
