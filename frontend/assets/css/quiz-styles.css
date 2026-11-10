@@ -13,11 +13,8 @@
   cursor: pointer; transition: transform .25s var(--hp-ease), box-shadow .25s var(--hp-ease), background .25s var(--hp-ease), color .25s var(--hp-ease);
 }
 .hp-btn svg { width: 16px; height: 16px; flex: none; transition: transform .25s var(--hp-ease); }
-.hp-btn:hover svg { transform: translateX(3px); }
 .hp-btn--primary { color: #fff; background: var(--hp-grad-cta); box-shadow: var(--hp-shadow-cta); }
-.hp-btn--primary:hover { transform: translateY(-2px); box-shadow: 0 16px 32px rgba(17, 175, 203, .32); }
 .hp-btn--outline { color: var(--hp-teal-dark); background: #fff; border-color: rgba(17, 175, 203, .35); }
-.hp-btn--outline:hover { background: var(--hp-teal-tint); border-color: var(--hp-teal); }
 .hp-btn--lg { min-height: 58px; padding: 0 38px; font-size: 16px; }
 .hp-btn--block { width: 100%; }
 .hp-btn:focus-visible, .hp-option:focus-visible, .hp-btn-link:focus-visible, .hp-price-option:focus-within {
@@ -29,7 +26,6 @@
   font-family: var(--hp-font); font-size: 14px; font-weight: 600; color: var(--hp-muted);
   background: none; border: 0; cursor: pointer; transition: color .2s;
 }
-.hp-btn-link:hover { color: var(--hp-teal-dark); }
 .hp-btn-link[hidden] { display: none; }
 
 /* ---------- Pills & kickers ---------- */
@@ -47,7 +43,6 @@
 .hp-topbar { background: var(--hp-navy-900); }
 .hp-topbar__inner { display: flex; flex-wrap: wrap; gap: 6px 26px; padding-top: 10px; padding-bottom: 10px; }
 .hp-topbar a { display: inline-flex; align-items: center; gap: 8px; color: #fff; font-size: 13px; font-weight: 600; text-decoration: none; }
-.hp-topbar a:hover { color: var(--hp-teal); }
 
 .hp-header { background: #fff; box-shadow: 0 8px 24px rgba(5, 21, 73, .05); position: relative; z-index: 2; }
 .hp-header__inner { display: flex; align-items: center; justify-content: space-between; gap: 16px; min-height: 92px; }
@@ -58,7 +53,6 @@
   font-size: 12px; font-weight: 700; color: var(--hp-navy); text-decoration: none;
   border: 1px solid var(--hp-border); border-radius: var(--hp-r-pill); background: #fff; transition: .2s;
 }
-.hp-header__link:hover { border-color: var(--hp-teal); color: var(--hp-teal-dark); }
 
 /* ---------- Main & views ---------- */
 .hp-main {
@@ -117,7 +111,6 @@
   background: var(--hp-surface-soft); border: 1.5px solid var(--hp-border); border-radius: var(--hp-r-sm);
   cursor: pointer; transition: border-color .2s, background .2s, box-shadow .2s, transform .2s;
 }
-.hp-option:hover { border-color: rgba(17, 175, 203, .55); background: #fff; box-shadow: var(--hp-shadow-card); transform: translateY(-1px); }
 .hp-option.is-selected { border-color: var(--hp-teal); background: #fff; box-shadow: 0 0 0 4px var(--hp-teal-tint), var(--hp-shadow-card); }
 
 .hp-option__icon {
@@ -196,7 +189,6 @@
 .hp-plan-card__side .hp-good-to-know { margin-bottom: 24px; }
 .hp-plan-card__side .hp-details { margin-bottom: 28px; }
 .hp-plan-card__more { display: block; margin-top: 14px; text-align: center; font-size: 13px; font-weight: 600; color: var(--hp-teal-dark); text-decoration: none; }
-.hp-plan-card__more:hover { text-decoration: underline; }
 
 .hp-price-options { display: grid; gap: 12px; margin: 26px 0 0; padding: 0; border: 0; }
 .hp-price-option {
@@ -204,7 +196,6 @@
   background: var(--hp-surface-soft); border: 1.5px solid var(--hp-border); border-radius: var(--hp-r-sm);
   cursor: pointer; transition: border-color .2s, background .2s, box-shadow .2s;
 }
-.hp-price-option:hover { border-color: rgba(17, 175, 203, .5); }
 .hp-price-option input { position: absolute; opacity: 0; pointer-events: none; }
 .hp-price-option.is-selected { background: #fff; border-color: var(--hp-teal); box-shadow: 0 0 0 4px var(--hp-teal-tint); }
 .hp-price-option__radio { position: relative; flex: none; width: 20px; height: 20px; border: 2px solid #C5D1DE; border-radius: 50%; background: #fff; }
@@ -244,7 +235,6 @@
   background: #fff; border: 1px solid var(--hp-border); border-radius: var(--hp-r-lg); box-shadow: var(--hp-shadow-card);
   transition: transform .25s var(--hp-ease), box-shadow .25s var(--hp-ease);
 }
-.hp-sme-card:hover { transform: translateY(-4px); box-shadow: var(--hp-shadow-lg); }
 .hp-sme-card.is-best { border: 2px solid var(--hp-teal); box-shadow: 0 0 0 6px var(--hp-teal-tint), var(--hp-shadow-lg); transform: translateY(-8px); }
 .hp-sme-card__ribbon {
   position: absolute; top: 22px; right: 20px; z-index: 1; padding: 6px 12px;
@@ -319,7 +309,6 @@
 .hp-footer__logo { height: 34px; width: auto; }
 .hp-footer__links { display: flex; flex-wrap: wrap; gap: 8px 24px; }
 .hp-footer__links a { font-size: 13px; color: rgba(255, 255, 255, .8); text-decoration: none; }
-.hp-footer__links a:hover { color: var(--hp-teal); }
 .hp-footer__bottom { padding: 16px; text-align: center; font-size: 12px; border-top: 1px solid rgba(255, 255, 255, .08); }
 
 /* ---------- Responsive ---------- */
@@ -354,6 +343,24 @@
   .hp-header__logo img { height: 42px; }
   .hp-topbar a { font-size: 12px; }
 }
+
+/* ---------- Hover (mouse only, so highlights don't stick after a tap on phones) ---------- */
+@media (hover: hover) and (pointer: fine) {
+  .hp-btn:hover svg { transform: translateX(3px); }
+  .hp-btn--primary:hover { transform: translateY(-2px); box-shadow: 0 16px 32px rgba(17, 175, 203, .32); }
+  .hp-btn--outline:hover { background: var(--hp-teal-tint); border-color: var(--hp-teal); }
+  .hp-btn-link:hover { color: var(--hp-teal-dark); }
+  .hp-topbar a:hover { color: var(--hp-teal); }
+  .hp-header__link:hover { border-color: var(--hp-teal); color: var(--hp-teal-dark); }
+  .hp-option:not(.is-selected):hover { border-color: rgba(17, 175, 203, .55); background: #fff; box-shadow: var(--hp-shadow-card); transform: translateY(-1px); }
+  .hp-plan-card__more:hover { text-decoration: underline; }
+  .hp-price-option:not(.is-selected):hover { border-color: rgba(17, 175, 203, .5); }
+  .hp-sme-card:not(.is-best):hover { transform: translateY(-4px); box-shadow: var(--hp-shadow-lg); }
+  .hp-footer__links a:hover { color: var(--hp-teal); }
+}
+
+/* Touch feedback while pressing */
+.hp-option:active, .hp-price-option:active { border-color: rgba(17, 175, 203, .55); }
 
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { animation: none !important; transition: none !important; }
