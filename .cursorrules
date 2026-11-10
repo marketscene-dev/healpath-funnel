@@ -44,5 +44,5 @@ Always highlight where appropriate:
 - **Other Clinics**: New Cairo (Operational), 6th October & Downtown Cairo (Coming Soon)
 
 ## Design System Files
-- `docs/BRAND_GUIDELINES.md`: Complete branding specifications, color codes, typography scale, UI components, and copywriting rules.
-- `assets/css/healpath-theme.css`: Ready-to-use CSS tokens and UI components.
+- `frontend/docs/BRAND_GUIDELINES.md`: Complete branding specifications, color codes, typography scale, UI components, and copywriting rules.
+- `frontend/assets/css/healpath-theme.css`: Ready-to-use CSS tokens and UI components.

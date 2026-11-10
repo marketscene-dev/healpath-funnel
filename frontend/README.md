@@ -7,9 +7,16 @@ to the patient platform to activate it.
 Branding, prices and CTA links mirror the
 [HealPath pricing page](https://healpath.the-marketscene.com/pricing/).
 
-## Project structure
+## Repository layout
 ```
-.
+healpath-funnel/
+├── frontend/   # This plan finder (static HTML, CSS, JS)
+└── backend/    # Reserved for server-side code (not used yet)
+```
+
+## Frontend structure
+```
+frontend/
 ├── index.html                      # Funnel page: intro → quiz → loading → result
 ├── assets/
 │   ├── css/
@@ -39,9 +46,9 @@ Branding, prices and CTA links mirror the
 Full logic and points: [docs/QUIZ_FUNNEL_DOCUMENTATION.md](docs/QUIZ_FUNNEL_DOCUMENTATION.md).
 
 ## Run locally
-No build step; it's plain HTML, CSS and JavaScript.
+No build step; it's plain HTML, CSS and JavaScript. From the repository root:
 ```bash
-python3 -m http.server 8080
+python3 -m http.server 8080 --directory frontend
 ```
 Then open http://localhost:8080
 

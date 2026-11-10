@@ -72,6 +72,6 @@ All CTAs → `https://patient.healpath.care/`. "Compare / View plan" links → p
 
 ## Run locally
 ```bash
-python3 -m http.server 8080
+python3 -m http.server 8080 --directory frontend
 ```
 Then open http://localhost:8080

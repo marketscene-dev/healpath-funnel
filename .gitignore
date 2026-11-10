@@ -11,3 +11,4 @@ extracted_copy.txt
 # Local tooling
 .claude/
 graphify-out/
+.archive/
