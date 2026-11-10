@@ -11,10 +11,10 @@
   <!-- Brand font: Poppins (same as healpath website) -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&family=Cairo:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 
-  <link rel="stylesheet" href="assets/css/healpath-theme.css?v=4">
-  <link rel="stylesheet" href="assets/css/quiz-styles.css?v=4">
+  <link rel="stylesheet" href="assets/css/healpath-theme.css?v=5">
+  <link rel="stylesheet" href="assets/css/quiz-styles.css?v=5">
 </head>
 <body>
 
@@ -23,7 +23,7 @@
     <div class="hp-container hp-topbar__inner">
       <a href="https://wa.me/201019003440" target="_blank" rel="noopener">
         <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M17.47 14.38c-.3-.15-1.75-.86-2.02-.96-.27-.1-.47-.15-.67.15-.2.3-.77.96-.94 1.16-.17.2-.35.22-.64.07-.3-.15-1.25-.46-2.38-1.47-.88-.79-1.47-1.76-1.65-2.06-.17-.3-.02-.46.13-.6.13-.14.3-.35.45-.52.15-.18.2-.3.3-.5.1-.2.05-.38-.02-.53-.08-.15-.67-1.6-.92-2.2-.24-.58-.49-.5-.67-.5h-.57c-.2 0-.52.07-.8.37-.27.3-1.04 1.02-1.04 2.48s1.07 2.88 1.21 3.08c.15.2 2.1 3.2 5.08 4.49.71.3 1.27.49 1.7.63.72.23 1.37.2 1.88.12.57-.09 1.75-.72 2-1.41.25-.7.25-1.29.17-1.41-.07-.13-.27-.2-.57-.35zM12.04 21.5h-.01a9.4 9.4 0 0 1-4.8-1.32l-.34-.2-3.57.94.95-3.48-.22-.36a9.4 9.4 0 0 1-1.44-5.02c0-5.2 4.23-9.43 9.44-9.43a9.38 9.38 0 0 1 9.43 9.44c0 5.2-4.24 9.43-9.44 9.43zm8.03-17.46A11.27 11.27 0 0 0 12.04.75C5.8.75.72 5.83.72 12.07c0 2 .52 3.94 1.51 5.65L.62 23.6l6.03-1.58a11.3 11.3 0 0 0 5.39 1.37h.01c6.24 0 11.32-5.08 11.32-11.32 0-3.03-1.18-5.87-3.3-8.02z"/></svg>
-        +201019003440
+        <span dir="ltr">+201019003440</span>
       </a>
       <a href="mailto:customercare@healpath.care">
         <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 7 9 6 9-6"/></svg>
@@ -38,10 +38,13 @@
       <a href="./" class="hp-header__logo" id="logo-home" aria-label="HealPath — restart the plan finder">
         <img src="assets/images/healpath-logo.png?v=4" alt="HealPath — Primary Care Redefined">
       </a>
+      <div class="hp-header__actions">
+      <button type="button" class="hp-header__link hp-header__lang" id="btn-lang" lang="ar">العربية</button>
       <a href="https://healpath.the-marketscene.com/pricing/" class="hp-header__link" target="_blank" rel="noopener">
-        View all pricing
+        <span data-i18n>View all pricing</span>
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
       </a>
+      </div>
     </div>
   </header>
 
@@ -51,25 +54,29 @@
       <!-- STEP 0 · INTRO -->
       <section id="step-intro" class="hp-view is-active" aria-labelledby="intro-title">
         <div class="hp-intro">
+          <div class="hp-lang" role="group" aria-label="Choose language / اختر اللغة">
+            <button type="button" class="hp-lang__btn is-active" data-lang="en" lang="en" aria-pressed="true">English</button>
+            <button type="button" class="hp-lang__btn" data-lang="ar" lang="ar" aria-pressed="false">العربية</button>
+          </div>
           <span class="hp-kicker">
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
-            60-second plan finder
+            <span data-i18n>60-second plan finder</span>
           </span>
-          <h1 id="intro-title" class="hp-intro__title">Find the HealPath plan that fits you</h1>
+          <h1 id="intro-title" class="hp-intro__title" data-i18n>Find the HealPath plan that fits you</h1>
           <span class="hp-underline" aria-hidden="true"></span>
-          <p class="hp-intro__lead">Answer 5 quick questions. We'll match you with the right access plan and take you straight to the patient platform to activate it.</p>
+          <p class="hp-intro__lead" data-i18n>Answer 5 quick questions. We'll match you with the right access plan and take you straight to the patient platform to activate it.</p>
 
           <button type="button" class="hp-btn hp-btn--primary hp-btn--lg" id="btn-start">
-            Find my plan
+            <span data-i18n>Find my plan</span>
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
           </button>
-          <span class="hp-intro__note">5 questions · Free · No sign-up needed</span>
+          <span class="hp-intro__note" data-i18n>5 questions · Free · No sign-up needed</span>
 
-          <div class="hp-intro__plans" aria-label="Plans we match you with">
-            <div class="hp-mini-plan"><span class="hp-mini-plan__name">Individual</span><span class="hp-mini-plan__price">from 250 EGP</span></div>
-            <div class="hp-mini-plan"><span class="hp-mini-plan__name">Family</span><span class="hp-mini-plan__price">from 750 EGP</span></div>
-            <div class="hp-mini-plan"><span class="hp-mini-plan__name">SME Access</span><span class="hp-mini-plan__price">from 90 EGP / employee</span></div>
-            <div class="hp-mini-plan"><span class="hp-mini-plan__name">HealPass Student</span><span class="hp-mini-plan__price">200 EGP / month</span></div>
+          <div class="hp-intro__plans" aria-label="Plans we match you with" data-i18n-aria>
+            <div class="hp-mini-plan"><span class="hp-mini-plan__name" data-i18n>Individual</span><span class="hp-mini-plan__price" data-i18n>from 250 EGP</span></div>
+            <div class="hp-mini-plan"><span class="hp-mini-plan__name" data-i18n>Family</span><span class="hp-mini-plan__price" data-i18n>from 750 EGP</span></div>
+            <div class="hp-mini-plan"><span class="hp-mini-plan__name" data-i18n>SME Access</span><span class="hp-mini-plan__price" data-i18n>from 90 EGP / employee</span></div>
+            <div class="hp-mini-plan"><span class="hp-mini-plan__name" data-i18n>HealPass Student</span><span class="hp-mini-plan__price" data-i18n>200 EGP / month</span></div>
           </div>
         </div>
       </section>
@@ -93,7 +100,7 @@
           <div class="hp-quiz__nav">
             <button type="button" id="btn-back" class="hp-btn-link" hidden>
               <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><path d="M19 12H5M11 18l-6-6 6-6"/></svg>
-              Back
+              <span data-i18n>Back</span>
             </button>
           </div>
         </div>
@@ -103,8 +110,8 @@
       <section id="step-loading" class="hp-view">
         <div class="hp-loading">
           <div class="hp-spinner" aria-hidden="true"></div>
-          <h2 class="hp-loading__title">Matching your answers</h2>
-          <p class="hp-loading__text">Comparing your needs with every HealPath access plan…</p>
+          <h2 class="hp-loading__title" data-i18n>Matching your answers</h2>
+          <p class="hp-loading__text" data-i18n>Comparing your needs with every HealPath access plan…</p>
         </div>
       </section>
 
@@ -113,7 +120,7 @@
         <header class="hp-result-head">
           <span class="hp-kicker">
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>
-            Your best match
+            <span data-i18n>Your best match</span>
           </span>
           <h2 id="result-title" class="hp-result-head__title"></h2>
           <p id="result-lead" class="hp-result-head__lead"></p>
@@ -128,11 +135,11 @@
         <div class="hp-result-foot">
           <div class="hp-notice">
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg>
-            <p><strong>Registration is required before activation.</strong> Access starts after payment and registration on the HealPath patient platform.</p>
+            <p data-i18n="notice.register"><strong>Registration is required before activation.</strong> Access starts after payment and registration on the HealPath patient platform.</p>
           </div>
           <button type="button" id="btn-retake" class="hp-btn-link">
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><path d="M3 12a9 9 0 1 0 3-6.7L3 8"/><path d="M3 3v5h5"/></svg>
-            Retake the quiz
+            <span data-i18n>Retake the quiz</span>
           </button>
         </div>
       </section>
@@ -144,15 +151,16 @@
     <div class="hp-container hp-footer__inner">
       <img src="assets/images/healpath-logo-white.png" alt="HealPath" class="hp-footer__logo">
       <div class="hp-footer__links">
-        <a href="https://healpath.the-marketscene.com/pricing/" target="_blank" rel="noopener">Pricing</a>
-        <a href="https://healpath.the-marketscene.com/faqs/" target="_blank" rel="noopener">FAQs</a>
-        <a href="https://healpath.the-marketscene.com/contact/" target="_blank" rel="noopener">Contact</a>
+        <a href="https://healpath.the-marketscene.com/pricing/" target="_blank" rel="noopener" data-i18n>Pricing</a>
+        <a href="https://healpath.the-marketscene.com/faqs/" target="_blank" rel="noopener" data-i18n>FAQs</a>
+        <a href="https://healpath.the-marketscene.com/contact/" target="_blank" rel="noopener" data-i18n>Contact</a>
         <a href="mailto:customercare@healpath.care">customercare@healpath.care</a>
       </div>
     </div>
-    <div class="hp-footer__bottom">&copy; 2026 HealPath. All rights reserved.</div>
+    <div class="hp-footer__bottom" data-i18n="footer.rights">&copy; 2026 HealPath. All rights reserved.</div>
   </footer>
 
-  <script src="assets/js/quiz-app.js?v=4"></script>
+  <script src="assets/js/lang-ar.js?v=5"></script>
+  <script src="assets/js/quiz-app.js?v=5"></script>
 </body>
 </html>

@@ -14,6 +14,26 @@
   const PRICING_URL = 'https://healpath.the-marketscene.com/pricing/';
 
   // ---------------------------------------------------------------------------
+  // LANGUAGE (English / Arabic). Arabic copy lives in lang-ar.js, keyed by the
+  // English text. Order: ?lang= in the URL → saved choice → browser language.
+  // ---------------------------------------------------------------------------
+  const AR = window.HP_AR || {};
+  const LANG_KEY = 'hp-lang';
+  let lang = 'en';
+  const isAr = () => lang === 'ar';
+  function t(s) {
+    if (!isAr() || !s) return s;
+    if (AR[s] === undefined) { console.warn('[i18n] missing Arabic for:', s); return s; }
+    return AR[s];
+  }
+  function initialLang() {
+    const fromUrl = new URLSearchParams(location.search).get('lang');
+    if (fromUrl === 'ar' || fromUrl === 'en') return fromUrl;
+    try { const saved = localStorage.getItem(LANG_KEY); if (saved === 'ar' || saved === 'en') return saved; } catch (e) { /* storage blocked */ }
+    return (navigator.language || '').toLowerCase().startsWith('ar') ? 'ar' : 'en';
+  }
+
+  // ---------------------------------------------------------------------------
   // ICONS
   // ---------------------------------------------------------------------------
   const icon = {
@@ -184,7 +204,10 @@
   // Shared question: how often care is needed (value framing vs pay-per-use 525 EGP)
   const valueWhy = (best) => {
     const p = MONTHLY_PRICE[best];
-    return p ? `One pay-per-use consultation costs 525 EGP. ${BUNDLES[best].name} is ${fmt(p)} EGP a month with unlimited urgent / primary care.` : '';
+    if (!p) return '';
+    return isAr()
+      ? `الاستشارة الواحدة بنظام الدفع حسب الاستخدام تكلف 525 جنيه. ${t(BUNDLES[best].name)} بسعر ${fmt(p)} جنيه شهريًا مع رعاية عاجلة / أولية غير محدودة.`
+      : `One pay-per-use consultation costs 525 EGP. ${BUNDLES[best].name} is ${fmt(p)} EGP a month with unlimited urgent / primary care.`;
   };
   const Q_FREQ = {
     id: 'freq',
@@ -426,11 +449,11 @@
     const total = questions.length;
     const pct = Math.round(((state.index + 1) / total) * 100);
 
-    $('q-counter').textContent = `Question ${state.index + 1} of ${total}`;
+    $('q-counter').textContent = isAr() ? `السؤال ${state.index + 1} من ${total}` : `Question ${state.index + 1} of ${total}`;
     $('q-percent').textContent = `${pct}%`;
     $('q-bar').style.width = `${pct}%`;
-    $('q-title').textContent = q.title;
-    $('q-subtitle').textContent = q.subtitle;
+    $('q-title').textContent = t(q.title);
+    $('q-subtitle').textContent = t(q.subtitle);
     $('btn-back').hidden = state.index === 0;
 
     const wrap = $('q-options');
@@ -445,8 +468,8 @@
       btn.innerHTML = `
         <span class="hp-option__icon" aria-hidden="true">${opt.icon}</span>
         <span class="hp-option__text">
-          <span class="hp-option__title">${opt.title}</span>
-          <span class="hp-option__desc">${opt.desc}</span>
+          <span class="hp-option__title">${t(opt.title)}</span>
+          <span class="hp-option__desc">${t(opt.desc)}</span>
         </span>
         <span class="hp-option__radio" aria-hidden="true"></span>`;
       btn.addEventListener('click', () => choose(i, btn));
@@ -529,7 +552,7 @@
       const top = Math.max(...eligible.map((k) => opt.points[k] || 0));
       if (mine > 0 && mine === top) {
         matches += 1;
-        const why = typeof opt.why === 'function' ? opt.why(best) : opt.why;
+        const why = typeof opt.why === 'function' ? opt.why(best) : t(opt.why);
         if (why) reasons.push(why);
       }
     });
@@ -545,51 +568,56 @@
   }
 
   function detailList(items) {
-    return `<ul class="hp-details">${items.map(([t, txt]) => `<li>${detailIcon(t)}<span>${txt}</span></li>`).join('')}</ul>`;
+    return `<ul class="hp-details">${items.map(([type, txt]) => `<li>${detailIcon(type)}<span>${t(txt)}</span></li>`).join('')}</ul>`;
   }
 
   // Honest "good to know" notes when an answer asks for something the plan doesn't include.
   function gapNotes(key) {
     const notes = [];
     const extra = ans('extra');
+    const add = (s) => notes.push(t(s));
 
     if (key === 'individual' || key === 'family') {
-      if (extra === 'meds') notes.push('Chronic Refill isn\'t part of this plan. It\'s available pay-per-use at 525 EGP per consultation.');
-      if (extra === 'specialist') notes.push('Specialty Care is available pay-per-use at 525 EGP per consultation.');
-      if (extra === 'dental') notes.push('Routine Dental isn\'t included in Individual or Family Access.');
+      if (extra === 'meds') add('Chronic Refill isn\'t part of this plan. It\'s available pay-per-use at 525 EGP per consultation.');
+      if (extra === 'specialist') add('Specialty Care is available pay-per-use at 525 EGP per consultation.');
+      if (extra === 'dental') add('Routine Dental isn\'t included in Individual or Family Access.');
     }
     if (key === 'family' && (ans('fsize') === '2' || ans('others') === '1more')) {
-      notes.push('For 2 people, two separate Individual Access plans would cost 500 EGP a month. Family Access lets you add up to 2 more members at no extra cost.');
+      add('For 2 people, two separate Individual Access plans would cost 500 EGP a month. Family Access lets you add up to 2 more members at no extra cost.');
     }
     if (key === 'family' && ans('fsize') === '5plus') {
-      notes.push('Family Access covers 4 registered members. Each extra person can join with their own Individual Access for 250 EGP a month.');
+      add('Family Access covers 4 registered members. Each extra person can join with their own Individual Access for 250 EGP a month.');
     }
     if (key === 'individual' && ans('others') === 'later') {
-      notes.push('If others join later, Family Access covers up to 4 people for 750 EGP a month.');
+      add('If others join later, Family Access covers up to 4 people for 750 EGP a month.');
     }
     if (key === 'individual' && ans('s_verify') === 'neither') {
-      notes.push('HealPass needs a student ID or university email. Once you have one, you can switch to HealPass for 200 EGP a month.');
+      add('HealPass needs a student ID or university email. Once you have one, you can switch to HealPass for 200 EGP a month.');
     }
     if (key === 'individual' && ans('s_use') === 'mental') {
-      notes.push('Mental health sessions are pay-per-use: psychiatry 750 EGP, psychology 600 EGP per session.');
+      add('Mental health sessions are pay-per-use: psychiatry 750 EGP, psychology 600 EGP per session.');
     }
     if (key === 'student') {
-      if (ans('s_use') === 'mental') notes.push('Mental health sessions are pay-per-use: psychiatry 750 EGP, psychology 600 EGP per session.');
-      if (ans('s_meds') === 'yes' || ans('s_meds') === 'sometimes') notes.push('Chronic Refill is available pay-per-use at 525 EGP per consultation.');
+      if (ans('s_use') === 'mental') add('Mental health sessions are pay-per-use: psychiatry 750 EGP, psychology 600 EGP per session.');
+      if (ans('s_meds') === 'yes' || ans('s_meds') === 'sometimes') add('Chronic Refill is available pay-per-use at 525 EGP per consultation.');
     }
     const mustHave = ans('c_meds') === 'few' || ans('c_meds') === 'many' || ans('c_spec') === 'often' || ans('c_dental') === 'must';
     if (key !== 'smeA' && ans('c_priority') === 'cost' && mustHave) {
-      notes.push(`You chose lowest cost, but Option A doesn't cover your must-haves. Option ${BUNDLES[key].option} is the lowest-priced option that does.`);
+      notes.push(isAr()
+        ? `اخترت أقل تكلفة، لكن الخيار A لا يغطي احتياجاتك الضرورية. الخيار ${BUNDLES[key].option} هو الأقل سعرًا الذي يغطيها.`
+        : `You chose lowest cost, but Option A doesn't cover your must-haves. Option ${BUNDLES[key].option} is the lowest-priced option that does.`);
     }
-    if (key === 'smeA' && ans('c_meds') === 'unsure') notes.push('If employees need refills later, Option B adds Chronic Refill for 15 EGP more per employee.');
+    if (key === 'smeA' && ans('c_meds') === 'unsure') add('If employees need refills later, Option B adds Chronic Refill for 15 EGP more per employee.');
     if ((key === 'smeA' || key === 'smeB') && (ans('c_spec') === 'sometimes' || ans('c_dental') === 'nice')) {
-      notes.push(`Option C adds Specialty Care and Routine Dental for ${120 - BUNDLES[key].price} EGP more per employee.`);
+      notes.push(isAr()
+        ? `يضيف الخيار C الرعاية التخصصية ورعاية الأسنان الروتينية مقابل ${120 - BUNDLES[key].price} جنيه إضافية للموظف.`
+        : `Option C adds Specialty Care and Routine Dental for ${120 - BUNDLES[key].price} EGP more per employee.`);
     }
     return notes;
   }
 
   function primaryBtn(label, extraClass = '') {
-    return `<a href="${PLATFORM_URL}" target="_blank" rel="noopener" class="hp-btn hp-btn--primary ${extraClass}">${label}${icon.arrow}</a>`;
+    return `<a href="${PLATFORM_URL}" target="_blank" rel="noopener" class="hp-btn hp-btn--primary ${extraClass}">${t(label)}${icon.arrow}</a>`;
   }
 
   function renderDirect(key) {
@@ -608,14 +636,14 @@
         <input type="radio" name="billing" value="${r.id}" ${r.id === pick ? 'checked' : ''}>
         <span class="hp-price-option__radio" aria-hidden="true"></span>
         <span class="hp-price-option__label">
-          <strong>${r.label}</strong>
-          <span>${r.sub}</span>
+          <strong>${t(r.label)}</strong>
+          <span>${t(r.sub)}</span>
         </span>
         <span class="hp-price-option__amount">
-          ${r.save ? `<em class="hp-save">Save ${fmt(r.save)} EGP</em>` : ''}
-          <strong>${fmt(r.price)}</strong><span>EGP</span>
+          ${r.save ? `<em class="hp-save">${isAr() ? `وفّر ${fmt(r.save)} جنيه` : `Save ${fmt(r.save)} EGP`}</em>` : ''}
+          <strong>${fmt(r.price)}</strong><span>${t('EGP')}</span>
         </span>
-        ${r.id === pick ? '<span class="hp-price-option__tag">Recommended</span>' : ''}
+        ${r.id === pick ? `<span class="hp-price-option__tag">${t('Recommended')}</span>` : ''}
       </label>`).join('');
 
     return `
@@ -624,22 +652,22 @@
           <div class="hp-plan-card__top">
             <span class="hp-plan-card__icon" aria-hidden="true">${b.icon}</span>
             <div>
-              <span class="hp-plan-card__audience">${b.audience}</span>
-              <h3>${b.name}</h3>
+              <span class="hp-plan-card__audience">${t(b.audience)}</span>
+              <h3>${t(b.name)}</h3>
             </div>
           </div>
-          <p class="hp-plan-card__desc">${b.desc}</p>
+          <p class="hp-plan-card__desc">${t(b.desc)}</p>
           <fieldset class="hp-price-options">
-            <legend class="sr-only">Choose billing period</legend>
+            <legend class="sr-only">${t('Choose billing period')}</legend>
             ${options}
           </fieldset>
         </div>
         <div class="hp-plan-card__side">
-          <h4>Plan details</h4>
+          <h4>${t('Plan details')}</h4>
           ${detailList(b.details)}
           ${notesBlock(key)}
           ${primaryBtn(b.cta, 'hp-btn--block')}
-          <a class="hp-plan-card__more" href="${PRICING_URL}${b.anchor}" target="_blank" rel="noopener">Compare on the pricing page</a>
+          <a class="hp-plan-card__more" href="${PRICING_URL}${b.anchor}" target="_blank" rel="noopener">${t('Compare on the pricing page')}</a>
         </div>
       </article>`;
   }
@@ -650,16 +678,16 @@
       const best = k === key;
       return `
         <article class="hp-sme-card${best ? ' is-best' : ''}">
-          ${best ? '<span class="hp-sme-card__ribbon">Best match for you</span>' : ''}
+          ${best ? `<span class="hp-sme-card__ribbon">${t('Best match for you')}</span>` : ''}
           <div class="hp-sme-card__header">
-            <span class="hp-sme-card__option">Option ${b.option}</span>
-            <div class="hp-sme-card__price"><strong>${b.price}</strong><span>EGP</span></div>
-            <small>per employee / month</small>
+            <span class="hp-sme-card__option">${isAr() ? 'الخيار' : 'Option'} ${b.option}</span>
+            <div class="hp-sme-card__price"><strong>${b.price}</strong><span>${t('EGP')}</span></div>
+            <small>${t('per employee / month')}</small>
           </div>
           <div class="hp-sme-card__body">
-            <h3>${b.name}</h3>
-            <ul class="hp-sme-list">${b.features.map((f) => `<li>${icon.check}<span>${f}</span></li>`).join('')}</ul>
-            <a href="${PLATFORM_URL}" target="_blank" rel="noopener" class="hp-btn ${best ? 'hp-btn--primary' : 'hp-btn--outline'} hp-btn--block">Start Company Setup${icon.arrow}</a>
+            <h3>${t(b.name)}</h3>
+            <ul class="hp-sme-list">${b.features.map((f) => `<li>${icon.check}<span>${t(f)}</span></li>`).join('')}</ul>
+            <a href="${PLATFORM_URL}" target="_blank" rel="noopener" class="hp-btn ${best ? 'hp-btn--primary' : 'hp-btn--outline'} hp-btn--block">${t('Start Company Setup')}${icon.arrow}</a>
           </div>
         </article>`;
     }).join('');
@@ -668,7 +696,7 @@
       <div class="hp-sme">
         <div class="hp-notice hp-notice--card">
           ${icon.brief}
-          <p>SME Access is designed for smaller employer groups and is different from large employer self-funded schemes. Company setup and an eligible employee list are required before activation.</p>
+          <p>${t('SME Access is designed for smaller employer groups and is different from large employer self-funded schemes. Company setup and an eligible employee list are required before activation.')}</p>
         </div>
         ${notesBlock(key)}
         <div class="hp-sme__grid">${cards}</div>
@@ -680,20 +708,20 @@
     return `
       <article class="hp-student">
         <div class="hp-student__content">
-          <span class="hp-pill">${icon.cap}Student-only program</span>
-          <h3>${b.name}</h3>
-          <p>${b.desc}</p>
+          <span class="hp-pill">${icon.cap}${t('Student-only program')}</span>
+          <h3>${t(b.name)}</h3>
+          <p>${t(b.desc)}</p>
           <div class="hp-student__price">
             <strong>${b.price}</strong>
-            <span><b>EGP</b>per student / month</span>
+            <span><b>${t('EGP')}</b>${t('per student / month')}</span>
           </div>
           ${primaryBtn(b.cta)}
         </div>
         <div class="hp-student__details">
-          <h4>What the program includes</h4>
+          <h4>${t('What the program includes')}</h4>
           ${detailList(b.details)}
           ${notesBlock(key)}
-          <a class="hp-plan-card__more" href="${PRICING_URL}${b.anchor}" target="_blank" rel="noopener">See HealPass on the pricing page</a>
+          <a class="hp-plan-card__more" href="${PRICING_URL}${b.anchor}" target="_blank" rel="noopener">${t('See HealPass on the pricing page')}</a>
         </div>
       </article>`;
   }
@@ -701,7 +729,7 @@
   function notesBlock(key) {
     const notes = gapNotes(key);
     if (!notes.length) return '';
-    return `<div class="hp-good-to-know"><strong>Good to know</strong>${notes.map((n) => `<p>${n}</p>`).join('')}</div>`;
+    return `<div class="hp-good-to-know"><strong>${t('Good to know')}</strong>${notes.map((n) => `<p>${n}</p>`).join('')}</div>`;
   }
 
   function renderWhy(result) {
@@ -710,12 +738,12 @@
     // Show the score only when it's convincing; a must-have can decide the plan on its own.
     const scoreBlock = result.matches >= 3 ? `
         <div class="hp-why__score">
-          <strong>${result.matches}<span>/${result.total}</span></strong>
-          <small>answers point to this plan</small>
+          <strong dir="ltr">${result.matches}<span>/${result.total}</span></strong>
+          <small>${t('answers point to this plan')}</small>
         </div>` : `
         <div class="hp-why__score">
-          <strong class="hp-why__label">Why</strong>
-          <small>this plan fits you</small>
+          <strong class="hp-why__label">${t('Why')}</strong>
+          <small>${t('this plan fits you')}</small>
         </div>`;
     return `
       <div class="hp-why__inner">
@@ -732,11 +760,11 @@
     return `
       <div class="hp-alt">
         <div>
-          <span class="hp-alt__label">Also worth a look</span>
-          <h4>${b.name}</h4>
-          <span class="hp-alt__price">From ${b.fromPrice}</span>
+          <span class="hp-alt__label">${t('Also worth a look')}</span>
+          <h4>${t(b.name)}</h4>
+          <span class="hp-alt__price">${isAr() ? 'ابتداءً من' : 'From'} ${t(b.fromPrice)}</span>
         </div>
-        <a href="${PRICING_URL}${b.anchor}" target="_blank" rel="noopener" class="hp-btn hp-btn--outline">View plan${icon.arrow}</a>
+        <a href="${PRICING_URL}${b.anchor}" target="_blank" rel="noopener" class="hp-btn hp-btn--outline">${t('View plan')}${icon.arrow}</a>
       </div>`;
   }
 
@@ -749,29 +777,77 @@
     student: ['HealPass Student is your best fit', 'Affordable monthly care built for verified university students.']
   };
 
+  function renderResult() {
+    const result = score();
+    const key = result.best;
+    const layout = BUNDLES[key].layout;
+    $('result-title').textContent = t(HEADLINES[key][0]);
+    $('result-lead').textContent = t(HEADLINES[key][1]);
+    $('result-plan').innerHTML = layout === 'direct' ? renderDirect(key) : layout === 'sme' ? renderSme(key) : renderStudent(key);
+    $('result-why').innerHTML = renderWhy(result);
+    $('result-alt').innerHTML = renderAlt(result);
+
+    // billing selector highlight
+    document.querySelectorAll('.hp-price-option input').forEach((input) => {
+      input.addEventListener('change', () => {
+        document.querySelectorAll('.hp-price-option').forEach((el) => el.classList.toggle('is-selected', el.contains(input) && input.checked));
+      });
+    });
+  }
+
   function finish() {
     show('step-loading');
-    const result = score();
-
     setTimeout(() => {
-      const key = result.best;
-      const layout = BUNDLES[key].layout;
-      $('result-title').textContent = HEADLINES[key][0];
-      $('result-lead').textContent = HEADLINES[key][1];
-      $('result-plan').innerHTML = layout === 'direct' ? renderDirect(key) : layout === 'sme' ? renderSme(key) : renderStudent(key);
-      $('result-why').innerHTML = renderWhy(result);
-      $('result-alt').innerHTML = renderAlt(result);
-
-      // billing selector highlight
-      document.querySelectorAll('.hp-price-option input').forEach((input) => {
-        input.addEventListener('change', () => {
-          document.querySelectorAll('.hp-price-option').forEach((el) => el.classList.toggle('is-selected', el.contains(input) && input.checked));
-        });
-      });
-
+      renderResult();
       show('step-result');
     }, 1600);
   }
+
+  // ---------------------------------------------------------------------------
+  // LANGUAGE SWITCH — swaps static text, sets dir/lang, re-renders the open step
+  // ---------------------------------------------------------------------------
+  function applyStatic() {
+    document.querySelectorAll('[data-i18n]').forEach((el) => {
+      if (el.dataset.en === undefined) el.dataset.en = el.innerHTML;
+      const key = el.dataset.i18n || el.dataset.en.replace(/\s+/g, ' ').trim();
+      el.innerHTML = isAr() && AR[key] !== undefined ? AR[key] : el.dataset.en;
+    });
+    document.querySelectorAll('[data-i18n-aria]').forEach((el) => {
+      if (el.dataset.enAria === undefined) el.dataset.enAria = el.getAttribute('aria-label');
+      el.setAttribute('aria-label', t(el.dataset.enAria));
+    });
+  }
+
+  const PAGE_EN = { title: document.title, desc: document.querySelector('meta[name="description"]').content };
+
+  function setLang(next, save) {
+    lang = next === 'ar' ? 'ar' : 'en';
+    const root = document.documentElement;
+    root.lang = lang;
+    root.dir = isAr() ? 'rtl' : 'ltr';
+    document.title = isAr() ? AR['page.title'] : PAGE_EN.title;
+    document.querySelector('meta[name="description"]').content = isAr() ? AR['page.desc'] : PAGE_EN.desc;
+    applyStatic();
+
+    document.querySelectorAll('.hp-lang__btn').forEach((b) => {
+      const on = b.dataset.lang === lang;
+      b.classList.toggle('is-active', on);
+      b.setAttribute('aria-pressed', String(on));
+    });
+    const toggle = $('btn-lang');
+    toggle.textContent = isAr() ? 'English' : 'العربية';
+    toggle.lang = isAr() ? 'en' : 'ar';
+
+    if (save) { try { localStorage.setItem(LANG_KEY, lang); } catch (e) { /* storage blocked */ } }
+
+    // Re-render whatever step is open so it switches language in place.
+    if ($('step-quiz').classList.contains('is-active')) renderQuestion();
+    if ($('step-result').classList.contains('is-active')) renderResult();
+  }
+
+  document.querySelectorAll('.hp-lang__btn').forEach((b) => b.addEventListener('click', () => setLang(b.dataset.lang, true)));
+  $('btn-lang').addEventListener('click', () => setLang(isAr() ? 'en' : 'ar', true));
+  setLang(initialLang(), false);
 
   // ---------------------------------------------------------------------------
   // EVENTS
