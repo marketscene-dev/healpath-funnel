@@ -7,8 +7,8 @@ to the patient platform to activate it.
 Branding, prices and CTA links mirror the
 [HealPath pricing page](https://healpath.the-marketscene.com/pricing/).
 
-**Live:** https://marketscene-dev.github.io/healpath-funnel/ (deployed from `frontend/` by
-`.github/workflows/pages.yml` on every push to `main`).
+**Live:** https://marketscene-dev.github.io/healpath-funnel/frontend/ (GitHub Pages, deployed from
+`main` on every push).
 
 ## Repository layout
 ```
