@@ -126,114 +126,247 @@
 
   const BUNDLE_KEYS = Object.keys(BUNDLES);
 
-  // Which bundles a person can actually buy, based on question 1.
+  // Extra icons used by the branching questions
+  Object.assign(icon, {
+    two: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="8" cy="8" r="3.2"/><circle cx="16" cy="8" r="3.2"/><path d="M2 20c0-3.3 2.7-5.5 6-5.5s6 2.2 6 5.5M14.5 14.6c.5-.1 1-.1 1.5-.1 3.3 0 6 2.2 6 5.5"/></svg>',
+    three: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="7" r="3"/><circle cx="5" cy="10" r="2.3"/><circle cx="19" cy="10" r="2.3"/><path d="M6.5 20c0-3.2 2.5-5.5 5.5-5.5s5.5 2.3 5.5 5.5M1.5 19c0-2.2 1.4-3.8 3.5-3.8M22.5 19c0-2.2-1.4-3.8-3.5-3.8"/></svg>',
+    idcard: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="2" y="5" width="20" height="14" rx="2"/><circle cx="8" cy="11" r="2"/><path d="M5 16c.6-1.5 1.7-2.2 3-2.2s2.4.7 3 2.2M14 10h5M14 13.5h3"/></svg>',
+    mail: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 7 9 6 9-6"/></svg>',
+    both: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 2 4 5v6c0 5 3.4 9.4 8 11 4.6-1.6 8-6 8-11V5z"/><path d="m8.5 12 2.5 2.5 4.5-5"/></svg>',
+    none: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><path d="m4.9 4.9 14.2 14.2"/></svg>',
+    mind: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 21s-7-4.4-9.2-9A5.3 5.3 0 0 1 12 6a5.3 5.3 0 0 1 9.2 6c-2.2 4.6-9.2 9-9.2 9z"/></svg>',
+    rare: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>',
+    coin: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M15 9.5c-.5-1-1.6-1.5-3-1.5-1.7 0-3 .8-3 2s1.3 1.7 3 2 3 .8 3 2-1.3 2-3 2c-1.4 0-2.5-.5-3-1.5M12 6v2M12 16v2"/></svg>',
+    balance: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 3v18M7 21h10M5 7h14M5 7l-3 6a3 3 0 0 0 6 0zM19 7l-3 6a3 3 0 0 0 6 0z"/></svg>',
+    shield: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 2 4 5v6c0 5 3.4 9.4 8 11 4.6-1.6 8-6 8-11V5z"/></svg>'
+  });
+
+  // What each SME option covers — used to enforce must-have answers.
+  const FEATURES = {
+    smeA: [],
+    smeB: ['chronic'],
+    smeC: ['chronic', 'specialty', 'dental']
+  };
+
+  // Which bundles a person can buy, based on question 1. Order = tie-break.
   const ELIGIBLE = {
     me: ['individual', 'family'],
     family: ['family', 'individual'],
-    company: ['smeC', 'smeB', 'smeA'],   // order = tie-break (more coverage wins a tie)
+    company: ['smeC', 'smeB', 'smeA'],
     student: ['student', 'individual']
   };
 
+  const MONTHLY_PRICE = { individual: 250, family: 750, student: 200 };
+
   // ---------------------------------------------------------------------------
-  // QUESTIONS — 5 questions, 4 answers each, every answer scores bundles
+  // QUESTIONS — Q1 picks the path, then 4 path-specific questions.
+  // Every answer gives points. Optional:
+  //   requires: [feature]  → only plans with that feature can win (SME)
+  //   exclude:  [bundle]   → that bundle can't win (e.g. unverified student)
+  //   why: string | fn(bestKey) → reason shown on the result
   // ---------------------------------------------------------------------------
-  const QUESTIONS = [
-    {
-      id: 'who',
-      title: 'Who is the plan for?',
-      subtitle: 'Pick the one that fits best.',
-      options: [
-        { value: 'me', icon: icon.user, title: 'Just me', desc: 'One person, one subscription',
-          points: { individual: 5 },
-          why: 'You need cover for yourself only.' },
-        { value: 'family', icon: icon.family, title: 'My family', desc: 'Up to 4 family members',
-          points: { family: 5 },
-          why: 'You want one plan for the whole family.' },
-        { value: 'company', icon: icon.building, title: 'My company', desc: 'Care for our employees',
-          points: { smeA: 4, smeB: 4, smeC: 4 },
-          why: 'You are covering employees, so SME Access applies.' },
-        { value: 'student', icon: icon.student, title: 'I\'m a university student', desc: 'With a student ID or uni email',
-          points: { student: 5 },
-          why: 'As a verified student you get HealPass student pricing.' }
-      ]
-    },
-    {
-      id: 'size',
-      title: 'How many people need care?',
-      subtitle: 'Count everyone who will use the plan.',
-      options: [
-        { value: '1', icon: icon.one, title: 'Only 1 person', desc: 'A single subscriber',
-          points: { individual: 3, student: 3 },
-          why: 'Only one person needs care.' },
-        { value: '2-4', icon: icon.people, title: '2 to 4 people', desc: 'Me plus family members',
-          points: { family: 4 },
-          why: 'Up to four people are covered under one subscription.' },
-        { value: '5-20', icon: icon.team, title: '5 to 20 employees', desc: 'A small team',
-          points: { smeA: 2, smeB: 2, smeC: 1 },
-          why: 'A small team gets the best value per employee.' },
-        { value: '20+', icon: icon.bigteam, title: 'More than 20 employees', desc: 'A growing company',
-          points: { smeA: 1, smeB: 2, smeC: 2 },
-          why: 'Larger teams get the most from wider employee coverage.' }
-      ]
-    },
-    {
-      id: 'meds',
-      title: 'Does anyone take medicine every month?',
-      subtitle: 'For example blood pressure, diabetes, or thyroid medicine.',
-      options: [
-        { value: 'no', icon: icon.check, title: 'No', desc: 'Nobody needs monthly refills',
-          points: { individual: 2, family: 2, student: 2, smeA: 3 },
-          why: 'No monthly medicine refills are needed.' },
-        { value: 'some', icon: icon.pill, title: 'Yes, 1 or 2 people', desc: 'A few regular refills',
-          points: { smeB: 3, smeC: 1 },
-          why: 'Some people need regular Chronic Refill.' },
-        { value: 'many', icon: icon.pills, title: 'Yes, several people', desc: 'Refills are needed often',
-          points: { smeB: 4, smeC: 2 },
-          why: 'Several people need regular Chronic Refill.' },
-        { value: 'unsure', icon: icon.question, title: 'Not sure yet', desc: 'I\'ll decide later',
-          points: { individual: 1, family: 1, student: 1, smeA: 1, smeB: 1 },
-          why: 'You can upgrade later if refills become necessary.' }
-      ]
-    },
-    {
-      id: 'extra',
-      title: 'What else matters most to you?',
-      subtitle: 'Choose the one you would use most.',
-      options: [
-        { value: 'gp', icon: icon.steth, title: 'Just a doctor when needed', desc: 'Urgent and primary care',
-          points: { individual: 2, family: 2, smeA: 3 },
-          why: 'Unlimited Urgent / Primary Care covers what you need.' },
-        { value: 'specialist', icon: icon.specialist, title: 'Specialist doctors', desc: 'Consults with specialists',
-          points: { student: 3, smeC: 4 },
-          why: 'Specialty Care is part of this plan.' },
-        { value: 'dental', icon: icon.tooth, title: 'Dental care', desc: 'Routine dental visits',
-          points: { smeC: 5 },
-          why: 'Routine Dental is included.' },
-        { value: 'discounts', icon: icon.lab, title: 'Lab, scan & medicine discounts', desc: 'Save on tests and medicine',
-          points: { student: 4 },
-          why: 'You get discount access for labs, scans, nutrition and medication.' }
-      ]
-    },
-    {
-      id: 'pay',
-      title: 'How would you like to pay?',
-      subtitle: 'Longer billing periods cost less per month.',
-      options: [
-        { value: 'monthly', icon: icon.cal1, title: 'Monthly', desc: 'Flexible, cancel anytime',
-          points: { individual: 1, family: 1, student: 3 },
-          why: 'Monthly billing keeps it flexible.' },
-        { value: 'quarterly', icon: icon.cal3, title: 'Every 3 months', desc: 'Save about 17%',
-          points: { individual: 2, family: 2 },
-          why: 'Quarterly billing saves you money.' },
-        { value: 'annual', icon: icon.cal12, title: 'Once a year', desc: 'Best price, 2 months free',
-          points: { individual: 2, family: 2 },
-          why: 'Annual billing gives you the lowest price.' },
-        { value: 'company', icon: icon.invoice, title: 'My company pays', desc: 'Per employee, per month',
-          points: { smeA: 2, smeB: 2, smeC: 2 },
-          why: 'Your company pays a fixed price per employee each month.' }
-      ]
-    }
-  ];
+  const Q_WHO = {
+    id: 'who',
+    title: 'Who is the plan for?',
+    subtitle: 'Pick the one that fits best.',
+    options: [
+      { value: 'me', path: 'direct', icon: icon.user, title: 'Just me', desc: 'One person, one subscription',
+        points: { individual: 2 }, why: 'You are mainly looking for cover for yourself.' },
+      { value: 'family', path: 'direct', icon: icon.family, title: 'My family', desc: 'Up to 4 family members',
+        points: { family: 2 }, why: 'You want one plan for your family.' },
+      { value: 'company', path: 'company', icon: icon.building, title: 'My company', desc: 'Care for our employees',
+        points: { smeA: 3, smeB: 3, smeC: 3 }, why: 'You are covering employees, so SME Access applies.' },
+      { value: 'student', path: 'student', icon: icon.student, title: 'I\'m a university student', desc: 'Active university student',
+        points: { student: 3 }, why: 'You are an active university student.' }
+    ]
+  };
+
+  // Shared question: how often care is needed (value framing vs pay-per-use 525 EGP)
+  const valueWhy = (best) => {
+    const p = MONTHLY_PRICE[best];
+    return p ? `One pay-per-use consultation costs 525 EGP. ${BUNDLES[best].name} is ${fmt(p)} EGP a month with unlimited urgent / primary care.` : '';
+  };
+  const Q_FREQ = {
+    id: 'freq',
+    title: 'How often do you usually need a doctor?',
+    subtitle: 'A rough guess is fine.',
+    options: [
+      { value: 'rare', icon: icon.rare, title: 'Rarely', desc: '1 or 2 times a year',
+        points: { individual: 1, family: 1, student: 1 }, why: 'You want cover ready for when you do get sick.' },
+      { value: 'few', icon: icon.cal3, title: 'Every few months', desc: 'A few visits a year',
+        points: { individual: 2, family: 2, student: 2 }, why: valueWhy },
+      { value: 'monthly', icon: icon.cal1, title: 'About once a month', desc: 'Regular check-ins',
+        points: { individual: 3, family: 3, student: 3 }, why: valueWhy },
+      { value: 'often', icon: icon.steth, title: 'More than once a month', desc: 'Frequent visits',
+        points: { individual: 3, family: 3, student: 3 }, why: 'Unlimited Urgent / Primary Care means frequent visits cost nothing extra.' }
+    ]
+  };
+
+  const PATHS = {
+    // Individual & Family
+    direct: [
+      {
+        id: 'size',
+        title: 'Including you, how many people need care?',
+        subtitle: 'Family Access covers up to 4 registered members.',
+        options: [
+          { value: '1', icon: icon.one, title: 'Just me', desc: '1 person',
+            points: { individual: 6 }, why: 'Only one person needs care.' },
+          { value: '2', icon: icon.two, title: '2 people', desc: 'Me and one more',
+            points: { family: 5, individual: 2 }, why: 'Family Access covers both of you, with room for 2 more members.' },
+          { value: '3', icon: icon.three, title: '3 people', desc: 'Me and two more',
+            points: { family: 6 }, why: 'Three people are covered under one Family subscription.' },
+          { value: '4', icon: icon.family, title: '4 people', desc: 'The full family plan',
+            points: { family: 6 }, why: 'All four members are covered for the price of three Individual plans.' }
+        ]
+      },
+      Q_FREQ,
+      {
+        id: 'extra',
+        title: 'Do you also need any of these?',
+        subtitle: 'We\'ll tell you upfront what is and isn\'t included.',
+        options: [
+          { value: 'none', icon: icon.check, title: 'No, just a doctor', desc: 'Urgent and primary care',
+            points: { individual: 2, family: 2 }, why: 'Unlimited Urgent / Primary Care covers what you need.' },
+          { value: 'meds', icon: icon.pill, title: 'Monthly medicine refills', desc: 'Blood pressure, diabetes…',
+            points: { individual: 1, family: 1 } },
+          { value: 'specialist', icon: icon.specialist, title: 'Specialist doctors', desc: 'Consults with specialists',
+            points: { individual: 1, family: 1 } },
+          { value: 'dental', icon: icon.tooth, title: 'Dental care', desc: 'Routine dental visits',
+            points: { individual: 1, family: 1 } }
+        ]
+      },
+      {
+        id: 'pay',
+        title: 'How would you like to pay?',
+        subtitle: 'Longer billing periods cost less per month.',
+        options: [
+          { value: 'monthly', icon: icon.cal1, title: 'Monthly', desc: 'Most flexible',
+            points: { individual: 1, family: 1 }, why: 'Monthly billing keeps it flexible.' },
+          { value: 'quarterly', icon: icon.cal3, title: 'Every 3 months', desc: 'Save about 17%',
+            points: { individual: 2, family: 2 }, why: 'Quarterly billing saves you about 17%.' },
+          { value: 'annual', icon: icon.cal12, title: 'Once a year', desc: 'Best price, 2 months free',
+            points: { individual: 2, family: 2 }, why: 'Annual billing gives you 2 months free.' },
+          { value: 'unsure', icon: icon.question, title: 'Not sure yet', desc: 'Show me all options',
+            points: { individual: 1, family: 1 } }
+        ]
+      }
+    ],
+
+    // SME Access A / B / C
+    company: [
+      {
+        id: 'c_meds',
+        title: 'Do employees need monthly medicine refills?',
+        subtitle: 'For example blood pressure, diabetes, or thyroid medicine.',
+        options: [
+          { value: 'none', icon: icon.check, title: 'No', desc: 'Nobody needs regular refills',
+            points: { smeA: 3 }, why: 'No regular medicine refills are needed.' },
+          { value: 'few', icon: icon.pill, title: 'Yes, a few employees', desc: 'Some regular refills',
+            points: { smeB: 3, smeC: 1 }, requires: ['chronic'], why: 'Some employees need Chronic Refill, which is included.' },
+          { value: 'many', icon: icon.pills, title: 'Yes, many employees', desc: 'Refills are needed often',
+            points: { smeB: 4, smeC: 2 }, requires: ['chronic'], why: 'Many employees need Chronic Refill, which is included.' },
+          { value: 'unsure', icon: icon.question, title: 'Not sure', desc: 'We haven\'t checked yet',
+            points: { smeA: 1, smeB: 2 }, why: 'Chronic Refill is included, so you are covered either way.' }
+        ]
+      },
+      {
+        id: 'c_spec',
+        title: 'Do employees need specialist doctors?',
+        subtitle: 'Consultations beyond urgent and primary care.',
+        options: [
+          { value: 'no', icon: icon.steth, title: 'No, primary care is enough', desc: 'Urgent and primary care only',
+            points: { smeA: 2, smeB: 2 }, why: 'Primary care covers your team\'s needs.' },
+          { value: 'sometimes', icon: icon.specialist, title: 'Sometimes', desc: 'Now and then',
+            points: { smeB: 1, smeC: 2 }, why: 'Specialty Care is included for when it\'s needed.' },
+          { value: 'often', icon: icon.specialist, title: 'Yes, it\'s a must', desc: 'Specialists are essential',
+            points: { smeC: 4 }, requires: ['specialty'], why: 'Specialty Care is a must for you, and only Option C includes it.' },
+          { value: 'unsure', icon: icon.question, title: 'Not sure', desc: 'Help me decide',
+            points: { smeB: 1, smeC: 1 } }
+        ]
+      },
+      {
+        id: 'c_dental',
+        title: 'Should the plan include dental care?',
+        subtitle: 'Routine dental visits for employees.',
+        options: [
+          { value: 'no', icon: icon.none, title: 'No', desc: 'Dental isn\'t needed',
+            points: { smeA: 1, smeB: 1 }, why: 'You don\'t pay for dental you won\'t use.' },
+          { value: 'nice', icon: icon.tooth, title: 'Nice to have', desc: 'A good extra benefit',
+            points: { smeC: 2 }, why: 'Routine Dental is included as an extra benefit.' },
+          { value: 'must', icon: icon.tooth, title: 'Yes, it\'s a must', desc: 'Dental is essential',
+            points: { smeC: 4 }, requires: ['dental'], why: 'Routine Dental is a must for you, and only Option C includes it.' },
+          { value: 'unsure', icon: icon.question, title: 'Not sure', desc: 'Help me decide',
+            points: { smeB: 1 } }
+        ]
+      },
+      {
+        id: 'c_priority',
+        title: 'What matters most for your company?',
+        subtitle: 'Must-haves from earlier always come first.',
+        options: [
+          { value: 'cost', icon: icon.coin, title: 'Lowest cost per employee', desc: 'Keep the budget tight',
+            points: { smeA: 4 }, why: 'It\'s the lowest price per employee that covers your needs.' },
+          { value: 'balance', icon: icon.balance, title: 'Good balance', desc: 'Price and coverage',
+            points: { smeB: 3 }, why: 'It balances price and coverage.' },
+          { value: 'max', icon: icon.shield, title: 'Widest coverage', desc: 'The best employee benefit',
+            points: { smeC: 4 }, why: 'It gives your employees the widest coverage.' },
+          { value: 'unsure', icon: icon.question, title: 'Recommend for me', desc: 'Based on my answers',
+            points: { smeB: 2 } }
+        ]
+      }
+    ],
+
+    // HealPass Student
+    student: [
+      {
+        id: 's_verify',
+        title: 'How can you verify you\'re a student?',
+        subtitle: 'HealPass needs verification before activation.',
+        options: [
+          { value: 'id', icon: icon.idcard, title: 'Student ID card', desc: 'A valid university ID',
+            points: { student: 3 }, why: 'You can verify with your student ID.' },
+          { value: 'email', icon: icon.mail, title: 'University email', desc: 'An active uni email address',
+            points: { student: 3 }, why: 'You can verify with your university email.' },
+          { value: 'both', icon: icon.both, title: 'Both', desc: 'Student ID and uni email',
+            points: { student: 4 }, why: 'You can verify with your student ID or university email.' },
+          { value: 'neither', icon: icon.none, title: 'Neither right now', desc: 'I don\'t have them yet',
+            points: { individual: 5 }, exclude: ['student'], why: 'Individual Access needs no student verification.' }
+        ]
+      },
+      {
+        id: 's_use',
+        title: 'What would you use most?',
+        subtitle: 'Pick your top need.',
+        options: [
+          { value: 'doctor', icon: icon.steth, title: 'A doctor when I\'m sick', desc: 'Urgent and primary care',
+            points: { student: 2, individual: 2 }, why: 'Unlimited Urgent / Primary Care Consultations are included.' },
+          { value: 'specialist', icon: icon.specialist, title: 'Specialist doctors', desc: 'Consults with specialists',
+            points: { student: 3 }, why: 'Two specialty teleconsultations per month are included.' },
+          { value: 'mental', icon: icon.mind, title: 'Mental health support', desc: 'Psychology or counselling',
+            points: { student: 1, individual: 1 } },
+          { value: 'discounts', icon: icon.lab, title: 'Lab, scan & medicine discounts', desc: 'Save on tests and medicine',
+            points: { student: 3 }, why: 'You get discount access for labs, scans, nutrition and medication.' }
+        ]
+      },
+      Q_FREQ,
+      {
+        id: 's_meds',
+        title: 'Do you take medicine every month?',
+        subtitle: 'For example asthma, thyroid, or diabetes medicine.',
+        options: [
+          { value: 'no', icon: icon.check, title: 'No', desc: 'No regular medicine',
+            points: { student: 2, individual: 2 }, why: 'You don\'t need regular medicine refills.' },
+          { value: 'yes', icon: icon.pill, title: 'Yes, every month', desc: 'Regular refills',
+            points: { student: 1, individual: 1 } },
+          { value: 'sometimes', icon: icon.pills, title: 'Sometimes', desc: 'Now and then',
+            points: { student: 1, individual: 1 } },
+          { value: 'unsure', icon: icon.question, title: 'Not sure', desc: 'I\'ll check later',
+            points: { student: 1, individual: 1 } }
+        ]
+      }
+    ]
+  };
 
   // ---------------------------------------------------------------------------
   // STATE & DOM
@@ -248,14 +381,22 @@
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }
 
-  const fmt = (n) => n.toLocaleString('en-US');
+  function fmt(n) { return n.toLocaleString('en-US'); }
+
+  // The question flow for the current Q1 answer (always 5 questions).
+  function flow() {
+    const who = state.answers.who;
+    const path = who === undefined ? 'direct' : Q_WHO.options[who].path;
+    return [Q_WHO, ...PATHS[path]];
+  }
 
   // ---------------------------------------------------------------------------
   // QUIZ
   // ---------------------------------------------------------------------------
   function renderQuestion() {
-    const q = QUESTIONS[state.index];
-    const total = QUESTIONS.length;
+    const questions = flow();
+    const q = questions[state.index];
+    const total = questions.length;
     const pct = Math.round(((state.index + 1) / total) * 100);
 
     $('q-counter').textContent = `Question ${state.index + 1} of ${total}`;
@@ -285,7 +426,6 @@
       wrap.appendChild(btn);
     });
 
-    // restart entry animation
     wrap.classList.remove('is-entering');
     void wrap.offsetWidth;
     wrap.classList.add('is-entering');
@@ -295,7 +435,10 @@
   function choose(i, btn) {
     if (locked) return;
     locked = true;
-    const q = QUESTIONS[state.index];
+    const q = flow()[state.index];
+    const changedPath = q.id === 'who' && state.answers.who !== undefined &&
+      Q_WHO.options[state.answers.who].path !== Q_WHO.options[i].path;
+    if (changedPath) state.answers = {}; // a new path starts fresh
     state.answers[q.id] = i;
 
     document.querySelectorAll('.hp-option').forEach((el) => {
@@ -307,7 +450,7 @@
 
     setTimeout(() => {
       locked = false;
-      if (state.index < QUESTIONS.length - 1) {
+      if (state.index < flow().length - 1) {
         state.index += 1;
         renderQuestion();
       } else {
@@ -319,37 +462,52 @@
   // ---------------------------------------------------------------------------
   // SCORING
   // ---------------------------------------------------------------------------
-  function answerOf(id) {
-    const q = QUESTIONS.find((x) => x.id === id);
-    return q.options[state.answers[id]];
+  function chosen() {
+    return flow().map((q) => q.options[state.answers[q.id]]);
   }
 
+  // Value of an answer by question id, or null when not on this path.
+  function ans(id) {
+    const q = flow().find((x) => x.id === id);
+    return q && state.answers[id] !== undefined ? q.options[state.answers[id]].value : null;
+  }
+  function answerOf(id) { return { value: ans(id) }; }
+
   function score() {
+    const picks = chosen();
     const totals = Object.fromEntries(BUNDLE_KEYS.map((k) => [k, 0]));
-    QUESTIONS.forEach((q) => {
-      const opt = q.options[state.answers[q.id]];
+    const requires = new Set();
+    const excluded = new Set();
+
+    picks.forEach((opt) => {
       Object.entries(opt.points).forEach(([k, v]) => { totals[k] += v; });
+      (opt.requires || []).forEach((f) => requires.add(f));
+      (opt.exclude || []).forEach((k) => excluded.add(k));
     });
 
-    const eligible = ELIGIBLE[answerOf('who').value];
-    // highest score wins; ties resolved by order in ELIGIBLE
-    const ranked = [...eligible].sort((a, b) => totals[b] - totals[a] || eligible.indexOf(a) - eligible.indexOf(b));
+    const base = ELIGIBLE[ans('who')];
+    let eligible = base.filter((k) => !excluded.has(k));
+    // Must-haves: keep only plans that include every required feature
+    const meetsNeeds = eligible.filter((k) => !FEATURES[k] || [...requires].every((f) => FEATURES[k].includes(f)));
+    if (meetsNeeds.length) eligible = meetsNeeds;
+
+    const ranked = [...eligible].sort((a, b) => totals[b] - totals[a] || base.indexOf(a) - base.indexOf(b));
     const best = ranked[0];
 
-    // How many answers pointed to the winner (gave it the top points among eligible plans)
+    // Answers that pointed to the winner (gave it the top points among eligible plans)
     let matches = 0;
     const reasons = [];
-    QUESTIONS.forEach((q) => {
-      const opt = q.options[state.answers[q.id]];
+    picks.forEach((opt) => {
       const mine = opt.points[best] || 0;
       const top = Math.max(...eligible.map((k) => opt.points[k] || 0));
       if (mine > 0 && mine === top) {
         matches += 1;
-        reasons.push(opt.why);
+        const why = typeof opt.why === 'function' ? opt.why(best) : opt.why;
+        if (why) reasons.push(why);
       }
     });
 
-    return { totals, best, ranked, matches, reasons };
+    return { totals, best, ranked, matches, reasons, total: picks.length };
   }
 
   // ---------------------------------------------------------------------------
@@ -365,23 +523,35 @@
 
   // Honest "good to know" notes when an answer asks for something the plan doesn't include.
   function gapNotes(key) {
-    const meds = answerOf('meds').value;
-    const extra = answerOf('extra').value;
     const notes = [];
-    const needsMeds = meds === 'some' || meds === 'many';
+    const extra = ans('extra');
 
     if (key === 'individual' || key === 'family') {
-      if (needsMeds) notes.push('Chronic Refill isn\'t part of this plan. It\'s available pay-per-use at 525 EGP per consultation.');
+      if (extra === 'meds') notes.push('Chronic Refill isn\'t part of this plan. It\'s available pay-per-use at 525 EGP per consultation.');
       if (extra === 'specialist') notes.push('Specialty Care is available pay-per-use at 525 EGP per consultation.');
       if (extra === 'dental') notes.push('Routine Dental isn\'t included in Individual or Family Access.');
-      if (extra === 'discounts') notes.push('Lab, scan and medication discounts are part of the HealPass Student Program for verified students.');
+    }
+    if (key === 'family' && ans('size') === '2') {
+      notes.push('For 2 people, two separate Individual Access plans would cost 500 EGP a month. Family Access lets you add up to 2 more members at no extra cost.');
+    }
+    if (key === 'individual' && ans('s_verify') === 'neither') {
+      notes.push('HealPass needs a student ID or university email. Once you have one, you can switch to HealPass for 200 EGP a month.');
+    }
+    if (key === 'individual' && ans('s_use') === 'mental') {
+      notes.push('Mental health sessions are pay-per-use: psychiatry 750 EGP, psychology 600 EGP per session.');
     }
     if (key === 'student') {
-      if (needsMeds) notes.push('Chronic Refill is available pay-per-use at 525 EGP per consultation.');
-      if (extra === 'dental') notes.push('Routine Dental isn\'t included in HealPass.');
+      if (ans('s_use') === 'mental') notes.push('Mental health sessions are pay-per-use: psychiatry 750 EGP, psychology 600 EGP per session.');
+      if (ans('s_meds') === 'yes' || ans('s_meds') === 'sometimes') notes.push('Chronic Refill is available pay-per-use at 525 EGP per consultation.');
     }
-    if (key === 'smeA' && needsMeds) notes.push('Need refills? Option B adds Chronic Refill for 15 EGP more per employee.');
-    if (key === 'smeB' && (extra === 'specialist' || extra === 'dental')) notes.push('Option C adds Specialty Care and Routine Dental for 15 EGP more per employee.');
+    const mustHave = ans('c_meds') === 'few' || ans('c_meds') === 'many' || ans('c_spec') === 'often' || ans('c_dental') === 'must';
+    if (key !== 'smeA' && ans('c_priority') === 'cost' && mustHave) {
+      notes.push(`You chose lowest cost, but Option A doesn't cover your must-haves. Option ${BUNDLES[key].option} is the lowest-priced option that does.`);
+    }
+    if (key === 'smeA' && ans('c_meds') === 'unsure') notes.push('If employees need refills later, Option B adds Chronic Refill for 15 EGP more per employee.');
+    if ((key === 'smeA' || key === 'smeB') && (ans('c_spec') === 'sometimes' || ans('c_dental') === 'nice')) {
+      notes.push(`Option C adds Specialty Care and Routine Dental for ${120 - BUNDLES[key].price} EGP more per employee.`);
+    }
     return notes;
   }
 
@@ -504,12 +674,19 @@
   function renderWhy(result) {
     const items = result.reasons.slice(0, 4);
     if (!items.length) return '';
+    // Show the score only when it's convincing; a must-have can decide the plan on its own.
+    const scoreBlock = result.matches >= 3 ? `
+        <div class="hp-why__score">
+          <strong>${result.matches}<span>/${result.total}</span></strong>
+          <small>answers point to this plan</small>
+        </div>` : `
+        <div class="hp-why__score">
+          <strong class="hp-why__label">Why</strong>
+          <small>this plan fits you</small>
+        </div>`;
     return `
       <div class="hp-why__inner">
-        <div class="hp-why__score">
-          <strong>${result.matches}<span>/${QUESTIONS.length}</span></strong>
-          <small>answers point to this plan</small>
-        </div>
+        ${scoreBlock}
         <ul class="hp-why__list">${items.map((r) => `<li>${icon.check}<span>${r}</span></li>`).join('')}</ul>
       </div>`;
   }

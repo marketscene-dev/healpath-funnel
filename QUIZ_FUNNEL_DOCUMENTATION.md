@@ -1,6 +1,6 @@
 # HealPath Plan Finder — Funnel Documentation
 
-A 5-question quiz that recommends one of the six bundles on the
+A branching 5-question quiz that recommends one of the six bundles on the
 [HealPath pricing page](https://healpath.the-marketscene.com/pricing/) and sends the
 customer to the same CTA link the website uses: `https://patient.healpath.care/`.
 
@@ -25,31 +25,49 @@ customer to the same CTA link the website uses: `https://patient.healpath.care/`
 All CTAs → `https://patient.healpath.care/`. "Compare / View plan" links → pricing page anchors
 `#individual-family`, `#sme-access`, `#healpass`.
 
-## Questions and points
-Every answer adds points to one or more bundles. The bundle with the most points wins,
-limited to the bundles the person can buy (based on Q1):
+## How the logic works
+1. **Question 1 picks the path** (Just me / My family → Individual & Family path; My company → SME path;
+   Student → Student path). Changing Q1 with Back clears the other path's answers.
+2. **Every answer gives points.** The plan with the most points wins, among the plans the person can buy.
+3. **Must-haves beat points (SME).** Answers marked `requires` remove options that don't include that feature:
+   refills needed → B or C; specialists or dental "must" → C. Price priority can't override a must-have.
+4. **Exclusions.** A student with no student ID or university email can't get HealPass → Individual Access,
+   with a note on how to switch later.
+5. **Ties** go to the plan with more coverage (C > B > A) or the plan matching Q1.
 
-- Just me → Individual, Family
-- My family → Family, Individual
-- My company → SME A / B / C (a tie goes to the option with more coverage)
-- Student → HealPass, Individual
+## Questions per path (4 answers each)
+**Q1 — Who is the plan for?** Just me (individual 2) · My family (family 2) · My company (SME A/B/C 3) · Student (student 3)
 
+**Individual & Family path**
 | Q | Answers → points |
 | --- | --- |
-| 1. Who is the plan for? | Just me: individual 5 · My family: family 5 · My company: smeA/B/C 4 · Student: student 5 |
-| 2. How many people need care? | 1: individual 3, student 3 · 2–4: family 4 · 5–20: smeA 2, smeB 2, smeC 1 · 20+: smeA 1, smeB 2, smeC 2 |
-| 3. Monthly medicine? | No: individual/family/student 2, smeA 3 · 1–2 people: smeB 3, smeC 1 · Several: smeB 4, smeC 2 · Not sure: 1 to all except smeC |
-| 4. What else matters? | Doctor when needed: individual 2, family 2, smeA 3 · Specialists: student 3, smeC 4 · Dental: smeC 5 · Lab/scan/medicine discounts: student 4 |
-| 5. How to pay? | Monthly: individual 1, family 1, student 3 · Quarterly: individual 2, family 2 · Yearly: individual 2, family 2 · Company pays: smeA/B/C 2 |
+| 2. How many people? | Just me: individual 6 · 2 people: family 5, individual 2 · 3 people: family 6 · 4 people: family 6 |
+| 3. How often a doctor? | Rarely 1 · Every few months 2 · Monthly 3 · More often 3 (both plans) |
+| 4. Also need? | Just a doctor 2 · Medicine refills / Specialists / Dental 1 (both plans, + "Good to know" note) |
+| 5. How to pay? | Monthly 1 · Quarterly 2 · Yearly 2 · Not sure 1 (sets the "Recommended" billing period) |
 
-Q5 also preselects the billing period shown as "Recommended" on Individual/Family results.
+**SME path**
+| Q | Answers → points |
+| --- | --- |
+| 2. Monthly medicine refills? | No: A 3 · A few: B 3, C 1 (must have refills) · Many: B 4, C 2 (must have refills) · Not sure: A 1, B 2 |
+| 3. Specialists? | No: A 2, B 2 · Sometimes: B 1, C 2 · Must: C 4 (must have specialty) · Not sure: B 1, C 1 |
+| 4. Dental? | No: A 1, B 1 · Nice to have: C 2 · Must: C 4 (must have dental) · Not sure: B 1 |
+| 5. Priority? | Lowest cost: A 4 · Balance: B 3 · Widest coverage: C 4 · Recommend for me: B 2 |
+
+**Student path**
+| Q | Answers → points |
+| --- | --- |
+| 2. How to verify? | Student ID: student 3 · Uni email: student 3 · Both: student 4 · Neither: individual 5, HealPass excluded |
+| 3. Use most? | Doctor when sick: student 2, individual 2 · Specialists: student 3 · Mental health: 1 each (+ note) · Discounts: student 3 |
+| 4. How often a doctor? | Same as above (student / individual) |
+| 5. Monthly medicine? | No: 2 each · Yes / Sometimes / Not sure: 1 each (+ note when needed) |
 
 ## Result page
 - Plan card in the same layout as the website (pricing card, SME option cards, student split card).
-- "X/5 answers point to this plan" plus the reasons.
-- "Good to know" notes when the person asked for something the plan does not include
-  (for example Chronic Refill on Individual → pay-per-use 525 EGP).
-- "Also worth a look" runner-up (not shown for SME, where all three options are already visible).
+- "X/5 answers point to this plan" with reasons (shown when 3 or more; otherwise just the reasons).
+- "Good to know" notes, for example: Chronic Refill pay-per-use 525 EGP; for 2 people two Individual plans
+  cost 500 EGP; a must-have overrode "lowest cost"; Option C adds dental for +15/+30 EGP.
+- "Also worth a look" runner-up (not shown for SME, where all three options are visible).
 
 ## Run locally
 ```bash
