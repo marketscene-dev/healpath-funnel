@@ -26,7 +26,7 @@ All CTAs → `https://patient.healpath.care/`. "Compare / View plan" links → p
 `#individual-family`, `#sme-access`, `#healpass`.
 
 ## How the logic works
-1. **Question 1 picks the path** (Just me / My family → Individual & Family path; My company → SME path;
+1. **Question 1 picks the path** (Just me → "me" path; My family → "family" path; My company → SME path;
    Student → Student path). Changing Q1 with Back clears the other path's answers.
 2. **Every answer gives points.** The plan with the most points wins, among the plans the person can buy.
 3. **Must-haves beat points (SME).** Answers marked `requires` remove options that don't include that feature:
@@ -38,10 +38,11 @@ All CTAs → `https://patient.healpath.care/`. "Compare / View plan" links → p
 ## Questions per path (4 answers each)
 **Q1 — Who is the plan for?** Just me (individual 2) · My family (family 2) · My company (SME A/B/C 3) · Student (student 3)
 
-**Individual & Family path**
+**"Just me" and "My family" paths** (only question 2 differs)
 | Q | Answers → points |
 | --- | --- |
-| 2. How many people? | Just me: individual 6 · 2 people: family 5, individual 2 · 3 people: family 6 · 4 people: family 6 |
+| 2. (Just me) Does anyone else at home need care too? | No, just me: individual 6 · 1 more person: family 5, individual 2 · 2 or 3 more: family 6 · Maybe later: individual 5, family 1 (+ note) |
+| 2. (My family) How many family members, including you? | 2: family 5, individual 2 (+ 500 EGP note) · 3: family 6 · 4: family 6 · More than 4: family 6 (+ note: extras use Individual) |
 | 3. How often a doctor? | Rarely 1 · Every few months 2 · Monthly 3 · More often 3 (both plans) |
 | 4. Also need? | Just a doctor 2 · Medicine refills / Specialists / Dental 1 (both plans, + "Good to know" note) |
 | 5. How to pay? | Monthly 1 · Quarterly 2 · Yearly 2 · Not sure 1 (sets the "Recommended" billing period) |

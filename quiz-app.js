@@ -170,9 +170,9 @@
     title: 'Who is the plan for?',
     subtitle: 'Pick the one that fits best.',
     options: [
-      { value: 'me', path: 'direct', icon: icon.user, title: 'Just me', desc: 'One person, one subscription',
+      { value: 'me', path: 'me', icon: icon.user, title: 'Just me', desc: 'One person, one subscription',
         points: { individual: 2 }, why: 'You are mainly looking for cover for yourself.' },
-      { value: 'family', path: 'direct', icon: icon.family, title: 'My family', desc: 'Up to 4 family members',
+      { value: 'family', path: 'family', icon: icon.family, title: 'My family', desc: 'Up to 4 family members',
         points: { family: 2 }, why: 'You want one plan for your family.' },
       { value: 'company', path: 'company', icon: icon.building, title: 'My company', desc: 'Care for our employees',
         points: { smeA: 3, smeB: 3, smeC: 3 }, why: 'You are covering employees, so SME Access applies.' },
@@ -202,55 +202,82 @@
     ]
   };
 
+  // Shared by the "Just me" and "My family" paths
+  const Q_EXTRA = {
+    id: 'extra',
+    title: 'Do you also need any of these?',
+    subtitle: 'We\'ll tell you upfront what is and isn\'t included.',
+    options: [
+      { value: 'none', icon: icon.check, title: 'No, just a doctor', desc: 'Urgent and primary care',
+        points: { individual: 2, family: 2 }, why: 'Unlimited Urgent / Primary Care covers what you need.' },
+      { value: 'meds', icon: icon.pill, title: 'Monthly medicine refills', desc: 'Blood pressure, diabetes…',
+        points: { individual: 1, family: 1 } },
+      { value: 'specialist', icon: icon.specialist, title: 'Specialist doctors', desc: 'Consults with specialists',
+        points: { individual: 1, family: 1 } },
+      { value: 'dental', icon: icon.tooth, title: 'Dental care', desc: 'Routine dental visits',
+        points: { individual: 1, family: 1 } }
+    ]
+  };
+
+  const Q_PAY = {
+    id: 'pay',
+    title: 'How would you like to pay?',
+    subtitle: 'Longer billing periods cost less per month.',
+    options: [
+      { value: 'monthly', icon: icon.cal1, title: 'Monthly', desc: 'Most flexible',
+        points: { individual: 1, family: 1 }, why: 'Monthly billing keeps it flexible.' },
+      { value: 'quarterly', icon: icon.cal3, title: 'Every 3 months', desc: 'Save about 17%',
+        points: { individual: 2, family: 2 }, why: 'Quarterly billing saves you about 17%.' },
+      { value: 'annual', icon: icon.cal12, title: 'Once a year', desc: 'Best price, 2 months free',
+        points: { individual: 2, family: 2 }, why: 'Annual billing gives you 2 months free.' },
+      { value: 'unsure', icon: icon.question, title: 'Not sure yet', desc: 'Show me all options',
+        points: { individual: 1, family: 1 } }
+    ]
+  };
+
   const PATHS = {
-    // Individual & Family
-    direct: [
+    // "Just me" — check whether anyone else should be covered
+    me: [
       {
-        id: 'size',
-        title: 'Including you, how many people need care?',
+        id: 'others',
+        title: 'Does anyone else at home need care too?',
+        subtitle: 'Family Access covers up to 4 people for 750 EGP a month.',
+        options: [
+          { value: 'no', icon: icon.one, title: 'No, just me', desc: 'Only I need care',
+            points: { individual: 6 }, why: 'Only you need care.' },
+          { value: '1more', icon: icon.two, title: 'Yes, 1 more person', desc: '2 people in total',
+            points: { family: 5, individual: 2 }, why: 'Family Access covers both of you, with room for 2 more members.' },
+          { value: '2-3more', icon: icon.three, title: 'Yes, 2 or 3 more', desc: '3 to 4 people in total',
+            points: { family: 6 }, why: 'Everyone is covered under one Family subscription of up to 4 members.' },
+          { value: 'later', icon: icon.question, title: 'Maybe later', desc: 'Just me for now',
+            points: { individual: 5, family: 1 }, why: 'You can start on your own and move to Family Access later.' }
+        ]
+      },
+      Q_FREQ,
+      Q_EXTRA,
+      Q_PAY
+    ],
+
+    // "My family" — how many members
+    family: [
+      {
+        id: 'fsize',
+        title: 'How many family members, including you?',
         subtitle: 'Family Access covers up to 4 registered members.',
         options: [
-          { value: '1', icon: icon.one, title: 'Just me', desc: '1 person',
-            points: { individual: 6 }, why: 'Only one person needs care.' },
           { value: '2', icon: icon.two, title: '2 people', desc: 'Me and one more',
             points: { family: 5, individual: 2 }, why: 'Family Access covers both of you, with room for 2 more members.' },
           { value: '3', icon: icon.three, title: '3 people', desc: 'Me and two more',
             points: { family: 6 }, why: 'Three people are covered under one Family subscription.' },
           { value: '4', icon: icon.family, title: '4 people', desc: 'The full family plan',
-            points: { family: 6 }, why: 'All four members are covered for the price of three Individual plans.' }
+            points: { family: 6 }, why: 'All four members are covered for the price of three Individual plans.' },
+          { value: '5plus', icon: icon.people, title: 'More than 4', desc: 'A bigger family',
+            points: { family: 6 }, why: 'Family Access covers your first four members in one subscription.' }
         ]
       },
       Q_FREQ,
-      {
-        id: 'extra',
-        title: 'Do you also need any of these?',
-        subtitle: 'We\'ll tell you upfront what is and isn\'t included.',
-        options: [
-          { value: 'none', icon: icon.check, title: 'No, just a doctor', desc: 'Urgent and primary care',
-            points: { individual: 2, family: 2 }, why: 'Unlimited Urgent / Primary Care covers what you need.' },
-          { value: 'meds', icon: icon.pill, title: 'Monthly medicine refills', desc: 'Blood pressure, diabetes…',
-            points: { individual: 1, family: 1 } },
-          { value: 'specialist', icon: icon.specialist, title: 'Specialist doctors', desc: 'Consults with specialists',
-            points: { individual: 1, family: 1 } },
-          { value: 'dental', icon: icon.tooth, title: 'Dental care', desc: 'Routine dental visits',
-            points: { individual: 1, family: 1 } }
-        ]
-      },
-      {
-        id: 'pay',
-        title: 'How would you like to pay?',
-        subtitle: 'Longer billing periods cost less per month.',
-        options: [
-          { value: 'monthly', icon: icon.cal1, title: 'Monthly', desc: 'Most flexible',
-            points: { individual: 1, family: 1 }, why: 'Monthly billing keeps it flexible.' },
-          { value: 'quarterly', icon: icon.cal3, title: 'Every 3 months', desc: 'Save about 17%',
-            points: { individual: 2, family: 2 }, why: 'Quarterly billing saves you about 17%.' },
-          { value: 'annual', icon: icon.cal12, title: 'Once a year', desc: 'Best price, 2 months free',
-            points: { individual: 2, family: 2 }, why: 'Annual billing gives you 2 months free.' },
-          { value: 'unsure', icon: icon.question, title: 'Not sure yet', desc: 'Show me all options',
-            points: { individual: 1, family: 1 } }
-        ]
-      }
+      Q_EXTRA,
+      Q_PAY
     ],
 
     // SME Access A / B / C
@@ -386,7 +413,7 @@
   // The question flow for the current Q1 answer (always 5 questions).
   function flow() {
     const who = state.answers.who;
-    const path = who === undefined ? 'direct' : Q_WHO.options[who].path;
+    const path = who === undefined ? 'me' : Q_WHO.options[who].path;
     return [Q_WHO, ...PATHS[path]];
   }
 
@@ -531,8 +558,14 @@
       if (extra === 'specialist') notes.push('Specialty Care is available pay-per-use at 525 EGP per consultation.');
       if (extra === 'dental') notes.push('Routine Dental isn\'t included in Individual or Family Access.');
     }
-    if (key === 'family' && ans('size') === '2') {
+    if (key === 'family' && (ans('fsize') === '2' || ans('others') === '1more')) {
       notes.push('For 2 people, two separate Individual Access plans would cost 500 EGP a month. Family Access lets you add up to 2 more members at no extra cost.');
+    }
+    if (key === 'family' && ans('fsize') === '5plus') {
+      notes.push('Family Access covers 4 registered members. Each extra person can join with their own Individual Access for 250 EGP a month.');
+    }
+    if (key === 'individual' && ans('others') === 'later') {
+      notes.push('If others join later, Family Access covers up to 4 people for 750 EGP a month.');
     }
     if (key === 'individual' && ans('s_verify') === 'neither') {
       notes.push('HealPass needs a student ID or university email. Once you have one, you can switch to HealPass for 200 EGP a month.');
