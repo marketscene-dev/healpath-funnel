@@ -71,7 +71,7 @@
 
 /* ---------- Language picker (intro) ---------- */
 .hp-lang {
-  display: inline-flex; gap: 4px; margin-bottom: 26px; padding: 4px;
+  display: flex; width: fit-content; gap: 4px; margin: 18px auto 0; padding: 4px;
   background: var(--hp-surface-soft); border: 1px solid var(--hp-border); border-radius: var(--hp-r-pill);
 }
 .hp-lang__btn {
