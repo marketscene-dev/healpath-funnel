@@ -67,29 +67,6 @@
 .hp-choice__title { position: relative; }
 .hp-choice__select { display: flex; flex-direction: column; gap: 4px; margin-top: 10px; padding-inline-end: 36px; font-size: 12px; font-weight: 600; color: var(--hp-muted); }
 
-/* ---------- Form ---------- */
-.hp-form { margin-top: 34px; padding-top: 30px; border-top: 1px solid var(--hp-border); }
-.hp-form__grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-top: 16px; }
-.hp-field { display: flex; flex-direction: column; gap: 6px; }
-.hp-field--full { grid-column: 1 / -1; }
-.hp-field__label { font-size: 13px; font-weight: 600; color: var(--hp-navy); }
-.hp-form input[type="text"], .hp-form input[type="tel"], .hp-form select, .hp-choice select {
-  width: 100%; min-height: 50px; padding: 0 16px;
-  font-family: var(--hp-font); font-size: 15px; color: var(--hp-navy);
-  background: #fff; border: 1.5px solid var(--hp-border); border-radius: 12px;
-  transition: border-color .2s, box-shadow .2s;
-}
-.hp-choice select { min-height: 44px; font-size: 14px; }
-[dir="rtl"] .hp-form input[type="tel"] { text-align: right; }
-.hp-form input:focus, .hp-form select:focus, .hp-choice select:focus { outline: none; border-color: var(--hp-teal); box-shadow: 0 0 0 4px var(--hp-teal-tint); }
-.hp-field.has-error input { border-color: var(--hp-no); }
-.hp-field__error { min-height: 0; font-size: 12px; color: var(--hp-no); }
-.hp-field__error:empty { display: none; }
-.hp-check { display: flex; align-items: flex-start; gap: 10px; margin: 18px 0 22px; font-size: 13px; line-height: 1.5; color: var(--hp-body); cursor: pointer; }
-.hp-check input { flex: none; width: 18px; height: 18px; margin-top: 1px; accent-color: var(--hp-teal); }
-.hp-form .hp-btn[disabled] { opacity: .6; cursor: wait; }
-.hp-form__note { margin-top: 12px; text-align: center; font-size: 12px; color: var(--hp-muted); }
-
 /* ---------- Thanks page ---------- */
 .hp-thanks {
   max-width: 620px; margin: 0 auto; padding: 48px 40px 36px; text-align: center;
@@ -136,10 +113,6 @@
   .hp-upsell { flex-direction: column; align-items: flex-start; padding: 20px; }
   .hp-upsell .hp-btn { width: 100%; }
 }
-
-/* ---------- Details step (first) ---------- */
-.hp-form--first { margin-top: 24px; padding-top: 0; border-top: 0; }
-.hp-form--first .hp-form__grid { margin-top: 0; }
 
 /* ---------- Date & time picker ---------- */
 .hp-slots { margin-top: 34px; padding-top: 30px; border-top: 1px solid var(--hp-border); }

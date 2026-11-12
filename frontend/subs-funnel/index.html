@@ -13,8 +13,8 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&family=Cairo:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 
-  <link rel="stylesheet" href="../shared/css/healpath-theme.css?v=6">
-  <link rel="stylesheet" href="../shared/css/quiz-styles.css?v=6">
+  <link rel="stylesheet" href="../shared/css/healpath-theme.css?v=7">
+  <link rel="stylesheet" href="../shared/css/quiz-styles.css?v=7">
 </head>
 <body>
 
@@ -70,7 +70,7 @@
             <span data-i18n>Find my plan</span>
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
           </button>
-          <span class="hp-intro__note" data-i18n>5 questions · Free · No sign-up needed</span>
+          <span class="hp-intro__note" data-i18n>5 questions · Free · About 60 seconds</span>
 
           <div class="hp-intro__plans" aria-label="Plans we match you with" data-i18n-aria>
             <div class="hp-mini-plan"><span class="hp-mini-plan__name" data-i18n>Individual</span><span class="hp-mini-plan__price" data-i18n>from 250 EGP</span></div>
@@ -81,7 +81,38 @@
         </div>
       </section>
 
-      <!-- STEP 1 · QUIZ -->
+      <!-- STEP 1 · DETAILS (name + phone first, so we never ask again) -->
+      <section id="step-details" class="hp-view">
+        <div class="hp-quiz">
+          <h2 class="hp-quiz__title hp-details__title" data-i18n>First, your details</h2>
+          <p class="hp-quiz__subtitle" data-i18n>We use them to set up your HealPath account and send you your plan, so you won't type them again.</p>
+          <form id="details-form" class="hp-form hp-form--first" novalidate>
+            <div class="hp-form__grid">
+              <label class="hp-field">
+                <span class="hp-field__label" data-i18n>Full name</span>
+                <input type="text" name="name" autocomplete="name" required>
+                <span class="hp-field__error" data-for="name"></span>
+              </label>
+              <label class="hp-field">
+                <span class="hp-field__label" data-i18n>Mobile number</span>
+                <input type="tel" name="phone" autocomplete="tel" inputmode="tel" dir="ltr" placeholder="01x xxxx xxxx" required>
+                <span class="hp-field__error" data-for="phone"></span>
+              </label>
+            </div>
+            <label class="hp-check">
+              <input type="checkbox" name="marketing">
+              <span data-i18n>Send me HealPath health tips and offers. You can stop them anytime.</span>
+            </label>
+            <button type="submit" class="hp-btn hp-btn--primary hp-btn--lg hp-btn--block">
+              <span data-i18n>Continue</span>
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+            </button>
+            <p class="hp-form__note" data-i18n>Use the number you'll use on the HealPath patient platform.</p>
+          </form>
+        </div>
+      </section>
+
+      <!-- STEP 2 · QUIZ -->
       <section id="step-quiz" class="hp-view" aria-live="polite">
         <div class="hp-quiz">
           <div class="hp-progress">
@@ -160,7 +191,7 @@
     <div class="hp-footer__bottom" data-i18n="footer.rights">&copy; 2026 HealPath. All rights reserved.</div>
   </footer>
 
-  <script src="js/lang-ar.js?v=6"></script>
-  <script src="js/quiz-app.js?v=6"></script>
+  <script src="js/lang-ar.js?v=7"></script>
+  <script src="js/quiz-app.js?v=7"></script>
 </body>
 </html>

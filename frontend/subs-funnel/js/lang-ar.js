@@ -13,7 +13,18 @@ window.HP_AR = {
   "Answer 5 quick questions. We'll match you with the right access plan and take you straight to the patient platform to activate it.":
     'أجب عن 5 أسئلة سريعة، وسنرشدك إلى الباقة المناسبة وننقلك مباشرة إلى منصة المرضى لتفعيلها.',
   'Find my plan': 'اعثر على باقتي',
-  '5 questions · Free · No sign-up needed': '5 أسئلة · مجانًا · بدون تسجيل',
+  '5 questions · Free · About 60 seconds': '5 أسئلة · مجانًا · حوالي 60 ثانية',
+  // Details step
+  'First, your details': 'أولًا، بياناتك',
+  "We use them to set up your HealPath account and send you your plan, so you won't type them again.":
+    'نستخدمها لإعداد حسابك على HealPath وإرسال باقتك إليك، فلن تحتاج لكتابتها مرة أخرى.',
+  'Full name': 'الاسم بالكامل',
+  'Mobile number': 'رقم الموبايل',
+  'Send me HealPath health tips and offers. You can stop them anytime.': 'أرسلوا لي نصائح صحية وعروض HealPath. يمكنني إيقافها في أي وقت.',
+  'Continue': 'متابعة',
+  "Use the number you'll use on the HealPath patient platform.": 'استخدم الرقم الذي ستستخدمه على منصة مرضى HealPath.',
+  'Please enter your name.': 'من فضلك اكتب اسمك.',
+  'Please enter a valid Egyptian mobile number, e.g. 010 1234 5678.': 'من فضلك اكتب رقم موبايل مصري صحيح، مثل 010 1234 5678.',
   'Individual': 'الفرد',
   'Family': 'العائلة',
   'SME Access': 'باقة الشركات',

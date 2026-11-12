@@ -12,6 +12,9 @@
   // ---------------------------------------------------------------------------
   const PLATFORM_URL = 'https://patient.healpath.care/';
   const PRICING_URL = 'https://healpath.the-marketscene.com/pricing/';
+  // Optional: backend URL that saves name + phone as soon as they're entered (POST, JSON).
+  // It may answer { leadId }, which is added to the platform links so the account can be pre-filled.
+  const LEAD_URL = '';
 
   // ---------------------------------------------------------------------------
   // LANGUAGE (English / Arabic). Arabic copy lives in lang-ar.js, keyed by the
@@ -421,10 +424,10 @@
   // ---------------------------------------------------------------------------
   // STATE & DOM
   // ---------------------------------------------------------------------------
-  const state = { index: 0, answers: {} }; // answers[questionId] = option index
+  const state = { index: 0, answers: {}, person: null, leadId: '' }; // answers[questionId] = option index
 
   const $ = (id) => document.getElementById(id);
-  const views = ['step-intro', 'step-quiz', 'step-loading', 'step-result'].map($);
+  const views = ['step-intro', 'step-details', 'step-quiz', 'step-loading', 'step-result'].map($);
 
   function show(id) {
     views.forEach((v) => v.classList.toggle('is-active', v.id === id));
@@ -454,7 +457,7 @@
     $('q-bar').style.width = `${pct}%`;
     $('q-title').textContent = t(q.title);
     $('q-subtitle').textContent = t(q.subtitle);
-    $('btn-back').hidden = state.index === 0;
+    $('btn-back').hidden = false; // on question 1 it goes back to the details step
 
     const wrap = $('q-options');
     wrap.innerHTML = '';
@@ -616,8 +619,21 @@
     return notes;
   }
 
-  function primaryBtn(label, extraClass = '') {
-    return `<a href="${PLATFORM_URL}" target="_blank" rel="noopener" class="hp-btn hp-btn--primary ${extraClass}">${t(label)}${icon.arrow}</a>`;
+  // Patient platform link, tagged so the platform knows the visitor came from the plan finder.
+  // Only tags and a random lead id go in the URL: never the name or phone.
+  function platformUrl(plan) {
+    const u = new URL(PLATFORM_URL);
+    u.searchParams.set('ref', 'plan-finder');
+    u.searchParams.set('plan', plan);
+    u.searchParams.set('utm_source', 'healpath-funnel');
+    u.searchParams.set('utm_medium', 'plan-finder');
+    u.searchParams.set('lang', lang);
+    if (state.leadId) u.searchParams.set('lead', state.leadId);
+    return u.toString();
+  }
+
+  function primaryBtn(label, extraClass = '', plan = '') {
+    return `<a href="${platformUrl(plan)}" target="_blank" rel="noopener" class="hp-btn hp-btn--primary ${extraClass}">${t(label)}${icon.arrow}</a>`;
   }
 
   function renderDirect(key) {
@@ -666,7 +682,7 @@
           <h4>${t('Plan details')}</h4>
           ${detailList(b.details)}
           ${notesBlock(key)}
-          ${primaryBtn(b.cta, 'hp-btn--block')}
+          ${primaryBtn(b.cta, 'hp-btn--block', key)}
           <a class="hp-plan-card__more" href="${PRICING_URL}${b.anchor}" target="_blank" rel="noopener">${t('Compare on the pricing page')}</a>
         </div>
       </article>`;
@@ -687,7 +703,7 @@
           <div class="hp-sme-card__body">
             <h3>${t(b.name)}</h3>
             <ul class="hp-sme-list">${b.features.map((f) => `<li>${icon.check}<span>${t(f)}</span></li>`).join('')}</ul>
-            <a href="${PLATFORM_URL}" target="_blank" rel="noopener" class="hp-btn ${best ? 'hp-btn--primary' : 'hp-btn--outline'} hp-btn--block">${t('Start Company Setup')}${icon.arrow}</a>
+            <a href="${platformUrl(k)}" target="_blank" rel="noopener" class="hp-btn ${best ? 'hp-btn--primary' : 'hp-btn--outline'} hp-btn--block">${t('Start Company Setup')}${icon.arrow}</a>
           </div>
         </article>`;
     }).join('');
@@ -715,7 +731,7 @@
             <strong>${b.price}</strong>
             <span><b>${t('EGP')}</b>${t('per student / month')}</span>
           </div>
-          ${primaryBtn(b.cta)}
+          ${primaryBtn(b.cta, '', 'student')}
         </div>
         <div class="hp-student__details">
           <h4>${t('What the program includes')}</h4>
@@ -852,16 +868,54 @@
   // ---------------------------------------------------------------------------
   // EVENTS
   // ---------------------------------------------------------------------------
-  $('btn-start').addEventListener('click', () => {
+  // Start: ask name + phone once; if we already have them, go straight to the quiz.
+  function startQuiz() {
     state.index = 0;
     renderQuestion();
     show('step-quiz');
+  }
+  $('btn-start').addEventListener('click', () => (state.person ? startQuiz() : show('step-details')));
+
+  // Egyptian mobile: 01x xxxx xxxx, with or without +20 / 0020.
+  function normalisePhone(raw) {
+    let d = String(raw).replace(/[^\d+]/g, '').replace(/^\+/, '').replace(/^00/, '');
+    if (d.startsWith('20')) d = d.slice(2);
+    if (!d.startsWith('0')) d = '0' + d;
+    return /^01[0125]\d{8}$/.test(d) ? d : null;
+  }
+  function setError(name, msg) {
+    const el = document.querySelector(`.hp-field__error[data-for="${name}"]`);
+    el.textContent = msg || '';
+    el.closest('.hp-field').classList.toggle('has-error', !!msg);
+  }
+
+  const detailsForm = $('details-form');
+  detailsForm.addEventListener('submit', (e) => {
+    e.preventDefault();
+    const field = (n) => detailsForm.elements.namedItem(n);
+    const name = field('name').value.trim();
+    const phone = normalisePhone(field('phone').value);
+    setError('name', name.length < 2 ? t('Please enter your name.') : '');
+    setError('phone', phone ? '' : t('Please enter a valid Egyptian mobile number, e.g. 010 1234 5678.'));
+    if (name.length < 2 || !phone) { detailsForm.querySelector('.has-error input').focus(); return; }
+
+    state.person = { name, phone, marketingConsent: field('marketing').checked };
+    if (LEAD_URL) {
+      fetch(LEAD_URL, { method: 'POST', headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(Object.assign({ source: 'plan-finder', lang }, state.person)) })
+        .then((r) => (r.ok ? r.json() : {})).then((d) => { if (d && d.leadId) state.leadId = d.leadId; })
+        .catch((err) => console.warn('[plans] lead not saved', err));
+    }
+    startQuiz();
   });
+  ['name', 'phone'].forEach((n) => detailsForm.elements.namedItem(n).addEventListener('input', () => setError(n, '')));
 
   $('btn-back').addEventListener('click', () => {
     if (state.index > 0) {
       state.index -= 1;
       renderQuestion();
+    } else {
+      show('step-details');
     }
   });
 
