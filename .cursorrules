@@ -45,4 +45,4 @@ Always highlight where appropriate:
 
 ## Design System Files
 - `frontend/docs/BRAND_GUIDELINES.md`: Complete branding specifications, color codes, typography scale, UI components, and copywriting rules.
-- `frontend/assets/css/healpath-theme.css`: Ready-to-use CSS tokens and UI components.
+- `frontend/shared/css/healpath-theme.css`: Ready-to-use CSS tokens and UI components.

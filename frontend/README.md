@@ -7,7 +7,7 @@ to the patient platform to activate it.
 Branding, prices and CTA links mirror the
 [HealPath pricing page](https://healpath.the-marketscene.com/pricing/).
 
-**Live:** https://marketscene-dev.github.io/healpath-funnel/frontend/ (GitHub Pages, deployed from
+**Live:** https://marketscene-dev.github.io/healpath-funnel/frontend/subs-funnel/ (the old `/frontend/` link redirects there; GitHub Pages, deployed from
 `main` on every push).
 
 ## Repository layout
@@ -20,13 +20,17 @@ healpath-funnel/
 ## Frontend structure
 ```
 frontend/
-├── index.html                      # Funnel page: intro → quiz → loading → result
-├── assets/
+├── index.html                      # Redirects the old /frontend/ link to subs-funnel/
+├── subs-funnel/                    # Subscription (plan finder) funnel
+│   ├── index.html                  # Funnel page: intro → quiz → loading → result
+│   └── js/
+│       ├── quiz-app.js             # Bundles, branching questions, scoring, result rendering, language switch
+│       └── lang-ar.js              # Arabic copy, keyed by the English text
+├── consult/                        # Free consultation funnel (coming next)
+├── shared/                         # Used by both funnels
 │   ├── css/
 │   │   ├── healpath-theme.css      # Brand tokens (Poppins, navy, teal, radii, shadows)
-│   │   └── quiz-styles.css         # Funnel components and responsive layout
-│   ├── js/
-│   │   └── quiz-app.js             # Bundles, branching questions, scoring, result rendering
+│   │   └── quiz-styles.css         # Funnel components, responsive layout, Arabic / RTL
 │   └── images/
 │       ├── healpath-logo.png
 │       └── healpath-logo-white.png
@@ -56,6 +60,6 @@ python3 -m http.server 8080 --directory frontend
 Then open http://localhost:8080
 
 ## Editing
-- **Prices or plan copy:** `BUNDLES` in `assets/js/quiz-app.js`
-- **Questions and points:** `Q_WHO` and `PATHS` in `assets/js/quiz-app.js`
-- **Colors and font:** `:root` tokens in `assets/css/healpath-theme.css`
+- **Prices or plan copy:** `BUNDLES` in `subs-funnel/js/quiz-app.js`
+- **Questions and points:** `Q_WHO` and `PATHS` in `subs-funnel/js/quiz-app.js`
+- **Colors and font:** `:root` tokens in `shared/css/healpath-theme.css`
