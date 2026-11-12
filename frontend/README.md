@@ -70,3 +70,14 @@ Then open http://localhost:8080
 - **Prices or plan copy:** `BUNDLES` in `subs-funnel/js/quiz-app.js`
 - **Questions and points:** `Q_WHO` and `PATHS` in `subs-funnel/js/quiz-app.js`
 - **Colors and font:** `:root` tokens in `shared/css/healpath-theme.css`
+
+## Language links (for ads)
+Each funnel has a fixed English and Arabic link. They keep any UTM tags and open
+the funnel in that language, whatever the visitor chose before:
+
+| Funnel | English | Arabic |
+|---|---|---|
+| Free consultation | `…/frontend/consult/en/` | `…/frontend/consult/ar/` |
+| Subscriptions | `…/frontend/subs-funnel/en/` | `…/frontend/subs-funnel/ar/` |
+
+`?lang=en` or `?lang=ar` on the main funnel link does the same.

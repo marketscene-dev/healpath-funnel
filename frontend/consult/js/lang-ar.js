@@ -17,12 +17,12 @@ window.HP_CONSULT_AR = {
   'Retake the quiz': 'أعد الاختبار',
 
   // ---------- Intro ----------
-  'Your first consultation is free': 'استشارتك الأولى مجانية',
-  'Find the right doctor for you': 'اعثر على الطبيب المناسب لك',
-  "Answer 5 quick questions. We'll suggest a general or a specialty consultation, and you book your first one free.":
-    'أجب عن 5 أسئلة سريعة، وسنقترح عليك استشارة عامة أو تخصصية، ثم احجز استشارتك الأولى مجانًا.',
-  'Find my doctor': 'اعثر على طبيبي',
-  '5 questions · Free first consultation · No payment needed': '5 أسئلة · الاستشارة الأولى مجانية · بدون دفع',
+  'General or specialty, your choice': 'عامة أو تخصصية، حسب اختيارك',
+  'Get your first doctor consultation free': 'احصل على استشارتك الطبية الأولى مجانًا',
+  "Answer 5 quick questions and we'll suggest the right doctor for you, general or specialist. Then book your free consultation.":
+    'أجب عن 5 أسئلة سريعة وسنقترح عليك الطبيب المناسب، عام أو أخصائي، ثم احجز استشارتك المجانية.',
+  'Get my free consultation': 'احصل على استشارتي المجانية',
+  '5 questions · Free for new HealPath accounts · No payment needed': '5 أسئلة · مجانًا لحسابات HealPath الجديدة · بدون دفع',
   "This quiz doesn't diagnose anything. It only helps you pick the right type of doctor.":
     'هذا الاختبار لا يشخّص أي حالة، بل يساعدك فقط على اختيار نوع الطبيب المناسب.',
 
@@ -148,34 +148,59 @@ window.HP_CONSULT_AR = {
   'A personal plan for weight, diet and healthy eating.': 'خطة شخصية للوزن والنظام الغذائي والأكل الصحي.',
 
   // ---------- Booking form ----------
-  'Your details': 'بياناتك',
   'Full name': 'الاسم بالكامل',
-  'Mobile number (WhatsApp)': 'رقم الموبايل (واتساب)',
-  'Best time to call you': 'أفضل وقت للتواصل معك',
-  'Morning (9am – 12pm)': 'صباحًا (9 ص – 12 م)',
-  'Afternoon (12pm – 5pm)': 'بعد الظهر (12 م – 5 م)',
-  'Evening (5pm – 10pm)': 'مساءً (5 م – 10 م)',
+  'Mobile number': 'رقم الموبايل',
   'Send me HealPath health tips and offers. You can stop them anytime.': 'أرسلوا لي نصائح صحية وعروض HealPath. يمكنني إيقافها في أي وقت.',
   'Book my free consultation': 'احجز استشارتي المجانية',
-  "We'll message you on WhatsApp to confirm the time. One free consultation per person.":
-    'سنراسلك على واتساب لتأكيد الموعد. استشارة مجانية واحدة لكل شخص.',
   'Please enter your name.': 'من فضلك اكتب اسمك.',
   'Please enter a valid Egyptian mobile number, e.g. 010 1234 5678.': 'من فضلك اكتب رقم موبايل مصري صحيح، مثل 010 1234 5678.',
   'Something went wrong. Please try again, or message us on WhatsApp.': 'حدث خطأ ما. حاول مرة أخرى، أو راسلنا على واتساب.',
 
   // ---------- Thanks page ----------
-  'Your request is in': 'تم استلام طلبك',
-  'We received your free consultation request.': 'استلمنا طلب استشارتك المجانية.',
-  'Send the WhatsApp message': 'أرسل رسالة الواتساب',
-  'It has your details ready. Just press send.': 'بياناتك جاهزة في الرسالة، فقط اضغط إرسال.',
-  'We confirm your time': 'نؤكد موعدك',
-  'Our team replies on WhatsApp to book a slot that suits you.': 'يرد فريقنا على واتساب لحجز موعد يناسبك.',
   'Meet your doctor': 'قابل طبيبك',
   'Your first consultation is free. No payment needed.': 'استشارتك الأولى مجانية، بدون أي دفع.',
-  "WhatsApp didn't open? Send it here": 'لم يفتح واتساب؟ أرسلها من هنا',
   'After your free visit': 'بعد زيارتك المجانية',
   'Get unlimited doctor consultations': 'احصل على استشارات طبية غير محدودة',
   'HealPath plans start from 250 EGP a month for unlimited urgent and primary care.':
     'باقات HealPath تبدأ من 250 جنيه شهريًا لرعاية عاجلة وأولية غير محدودة.',
-  'Find my plan': 'اعثر على باقتي'
+  'Find my plan': 'اعثر على باقتي',
+
+  // ---------- Details step ----------
+  'First, your details': 'أولًا، بياناتك',
+  "We use them to hold your free consultation and set up your HealPath account, so you won't type them again.":
+    'نستخدمها لحجز استشارتك المجانية وإنشاء حسابك على HealPath، فلن تحتاج لكتابتها مرة أخرى.',
+  'Continue': 'متابعة',
+  "Use the number you'll create your HealPath account with. The free consultation is for new accounts only.": 'استخدم الرقم الذي ستنشئ به حسابك على HealPath. الاستشارة المجانية للحسابات الجديدة فقط.',
+
+  // ---------- Date & time ----------
+  'Pick a date and time': 'اختر اليوم والموعد',
+  "Times are in Cairo time. These are the doctors' open slots right now.": 'المواعيد بتوقيت القاهرة، وهي المواعيد المتاحة لدى الأطباء الآن.',
+  'Demo times: not connected to the booking system yet.': 'مواعيد تجريبية: غير مرتبطة بنظام الحجز بعد.',
+  'Date': 'اليوم',
+  'Time': 'الموعد',
+  'Loading open times…': 'جارٍ تحميل المواعيد المتاحة…',
+  "We couldn't load the open times.": 'تعذّر تحميل المواعيد المتاحة.',
+  'Try again': 'حاول مرة أخرى',
+  'No open times in the next 2 weeks for this consultation. Try the other option above.': 'لا توجد مواعيد متاحة لهذه الاستشارة خلال الأسبوعين القادمين. جرّب الخيار الآخر بالأعلى.',
+  'Pick a time above to continue.': 'اختر موعدًا بالأعلى للمتابعة.',
+  'Booking for': 'الحجز باسم',
+  'Change': 'تغيير',
+  'Please pick a date and time.': 'من فضلك اختر اليوم والموعد.',
+  'This number has already used its free consultation.': 'هذا الرقم استخدم استشارته المجانية من قبل.',
+  'That time was just taken. Please pick another.': 'تم حجز هذا الموعد للتو. من فضلك اختر موعدًا آخر.',
+  'We hold this time for 15 minutes. Next, create your free HealPath account with this number to confirm it. New accounts only, one free consultation each.': 'نحجز لك هذا الموعد لمدة 15 دقيقة، ثم أنشئ حسابك المجاني على HealPath بهذا الرقم لتأكيده. للحسابات الجديدة فقط، استشارة مجانية واحدة لكل حساب.',
+
+  // ---------- Thanks (held booking) ----------
+  'Your time is on hold': 'موعدك محجوز مؤقتًا',
+  'Create your free HealPath account to confirm your consultation.': 'أنشئ حسابك المجاني على HealPath لتأكيد استشارتك.',
+  'Consultation': 'الاستشارة',
+  'Demo booking: not connected to the booking system yet.': 'حجز تجريبي: غير مرتبط بنظام الحجز بعد.',
+  'Create your free HealPath account': 'أنشئ حسابك المجاني على HealPath',
+  'Sign up with the same mobile number you entered here. Your booking comes with you.': 'سجّل بنفس رقم الموبايل الذي أدخلته هنا، وسينتقل حجزك معك.',
+  'Your booking is confirmed instantly': 'يتم تأكيد حجزك فورًا',
+  'As soon as your account is created, the time you picked is locked in.': 'بمجرد إنشاء حسابك، يتم تثبيت الموعد الذي اخترته.',
+  'Create my account to confirm': 'أنشئ حسابي لتأكيد الحجز',
+  'Your hold has ended. Create your account now: if the time is still free we confirm it, otherwise you can pick a new one.': 'انتهت مدة الحجز المؤقت. أنشئ حسابك الآن: إذا كان الموعد ما زال متاحًا سنؤكده، وإلا يمكنك اختيار موعد جديد.',
+  'Already have a HealPath account? This offer is for new accounts only. You can book through your account or see our plans.': 'لديك حساب على HealPath بالفعل؟ هذا العرض للحسابات الجديدة فقط. يمكنك الحجز من حسابك أو الاطلاع على باقاتنا.',
+  'This number already has a HealPath account. The free consultation is for new accounts only.': 'هذا الرقم لديه حساب على HealPath بالفعل. الاستشارة المجانية للحسابات الجديدة فقط.',
 };

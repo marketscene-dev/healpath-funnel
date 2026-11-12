@@ -15,7 +15,7 @@
 
   <link rel="stylesheet" href="../shared/css/healpath-theme.css?v=6">
   <link rel="stylesheet" href="../shared/css/quiz-styles.css?v=6">
-  <link rel="stylesheet" href="css/consult.css?v=1">
+  <link rel="stylesheet" href="css/consult.css?v=2">
 </head>
 <body>
 
@@ -57,26 +57,57 @@
         <div class="hp-intro">
           <span class="hp-kicker">
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><path d="M20 12v10H4V12M2 7h20v5H2zM12 22V7M12 7H7.5a2.5 2.5 0 0 1 0-5C11 2 12 7 12 7zM12 7h4.5a2.5 2.5 0 0 0 0-5C13 2 12 7 12 7z"/></svg>
-            <span data-i18n>Your first consultation is free</span>
+            <span data-i18n>General or specialty, your choice</span>
           </span>
           <div class="hp-lang" role="group" aria-label="Choose language / اختر اللغة">
             <button type="button" class="hp-lang__btn is-active" data-lang="en" lang="en" aria-pressed="true">English</button>
             <button type="button" class="hp-lang__btn" data-lang="ar" lang="ar" aria-pressed="false">العربية</button>
           </div>
-          <h1 id="intro-title" class="hp-intro__title" data-i18n>Find the right doctor for you</h1>
+          <h1 id="intro-title" class="hp-intro__title" data-i18n>Get your first doctor consultation free</h1>
           <span class="hp-underline" aria-hidden="true"></span>
-          <p class="hp-intro__lead" data-i18n>Answer 5 quick questions. We'll suggest a general or a specialty consultation, and you book your first one free.</p>
+          <p class="hp-intro__lead" data-i18n>Answer 5 quick questions and we'll suggest the right doctor for you, general or specialist. Then book your free consultation.</p>
 
           <button type="button" class="hp-btn hp-btn--primary hp-btn--lg" id="btn-start">
-            <span data-i18n>Find my doctor</span>
+            <span data-i18n>Get my free consultation</span>
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
           </button>
-          <span class="hp-intro__note" data-i18n>5 questions · Free first consultation · No payment needed</span>
+          <span class="hp-intro__note" data-i18n>5 questions · Free for new HealPath accounts · No payment needed</span>
           <p class="hp-disclaimer" data-i18n>This quiz doesn't diagnose anything. It only helps you pick the right type of doctor.</p>
         </div>
       </section>
 
-      <!-- STEP 1 · QUIZ -->
+      <!-- STEP 1 · DETAILS (name + phone first, so we never ask again) -->
+      <section id="step-details" class="hp-view">
+        <div class="hp-quiz">
+          <h2 class="hp-quiz__title hp-details__title" data-i18n>First, your details</h2>
+          <p class="hp-quiz__subtitle" data-i18n>We use them to hold your free consultation and set up your HealPath account, so you won't type them again.</p>
+          <form id="details-form" class="hp-form hp-form--first" novalidate>
+            <div class="hp-form__grid">
+              <label class="hp-field">
+                <span class="hp-field__label" data-i18n>Full name</span>
+                <input type="text" name="name" autocomplete="name" required>
+                <span class="hp-field__error" data-for="name"></span>
+              </label>
+              <label class="hp-field">
+                <span class="hp-field__label" data-i18n>Mobile number</span>
+                <input type="tel" name="phone" autocomplete="tel" inputmode="tel" dir="ltr" placeholder="01x xxxx xxxx" required>
+                <span class="hp-field__error" data-for="phone"></span>
+              </label>
+            </div>
+            <label class="hp-check">
+              <input type="checkbox" name="marketing">
+              <span data-i18n>Send me HealPath health tips and offers. You can stop them anytime.</span>
+            </label>
+            <button type="submit" class="hp-btn hp-btn--primary hp-btn--lg hp-btn--block">
+              <span data-i18n>Continue</span>
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+            </button>
+            <p class="hp-form__note" data-i18n>Use the number you'll create your HealPath account with. The free consultation is for new accounts only.</p>
+          </form>
+        </div>
+      </section>
+
+      <!-- STEP 2 · QUIZ -->
       <section id="step-quiz" class="hp-view" aria-live="polite">
         <div class="hp-quiz">
           <div class="hp-progress">
@@ -147,38 +178,25 @@
           <h3 id="choice-title" class="hp-book__title" data-i18n>Choose your free consultation</h3>
           <div id="choice-cards" class="hp-choices" role="radiogroup" aria-labelledby="choice-title"></div>
 
-          <form id="book-form" class="hp-form" novalidate>
-            <h3 class="hp-book__title" data-i18n>Your details</h3>
-            <div class="hp-form__grid">
-              <label class="hp-field">
-                <span class="hp-field__label" data-i18n>Full name</span>
-                <input type="text" name="name" autocomplete="name" required>
-                <span class="hp-field__error" data-for="name"></span>
-              </label>
-              <label class="hp-field">
-                <span class="hp-field__label" data-i18n>Mobile number (WhatsApp)</span>
-                <input type="tel" name="phone" autocomplete="tel" inputmode="tel" dir="ltr" placeholder="01x xxxx xxxx" required>
-                <span class="hp-field__error" data-for="phone"></span>
-              </label>
-              <label class="hp-field hp-field--full">
-                <span class="hp-field__label" data-i18n>Best time to call you</span>
-                <select name="time">
-                  <option value="morning" data-i18n>Morning (9am – 12pm)</option>
-                  <option value="afternoon" data-i18n>Afternoon (12pm – 5pm)</option>
-                  <option value="evening" data-i18n>Evening (5pm – 10pm)</option>
-                </select>
-              </label>
-            </div>
-            <label class="hp-check">
-              <input type="checkbox" name="marketing">
-              <span data-i18n>Send me HealPath health tips and offers. You can stop them anytime.</span>
-            </label>
-            <button type="submit" class="hp-btn hp-btn--primary hp-btn--lg hp-btn--block" id="btn-book">
+          <div class="hp-slots" id="slot-picker">
+            <h3 class="hp-book__title" data-i18n>Pick a date and time</h3>
+            <p class="hp-slots__sub" data-i18n>Times are in Cairo time. These are the doctors' open slots right now.</p>
+            <p class="hp-slots__demo" id="slots-demo" hidden data-i18n>Demo times: not connected to the booking system yet.</p>
+            <div class="hp-days" id="slot-days" role="radiogroup" data-i18n-aria aria-label="Date"></div>
+            <div class="hp-times" id="slot-times" role="radiogroup" data-i18n-aria aria-label="Time"></div>
+            <p class="hp-slots__status" id="slots-status" aria-live="polite"></p>
+            <p class="hp-slots__error" id="slot-error" aria-live="assertive"></p>
+          </div>
+
+          <div class="hp-confirm">
+            <p class="hp-confirm__summary" id="book-summary"></p>
+            <p class="hp-confirm__who" id="book-who"></p>
+            <button type="button" class="hp-btn hp-btn--primary hp-btn--lg hp-btn--block" id="btn-book">
               <span data-i18n>Book my free consultation</span>
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
             </button>
-            <p class="hp-form__note" data-i18n>We'll message you on WhatsApp to confirm the time. One free consultation per person.</p>
-          </form>
+            <p class="hp-form__note" data-i18n>We hold this time for 15 minutes. Next, create your free HealPath account with this number to confirm it. New accounts only, one free consultation each.</p>
+          </div>
         </div>
 
         <div class="hp-result-foot">
@@ -207,7 +225,8 @@
 
   <script src="../shared/js/tracking.js?v=1"></script>
   <script src="../shared/js/i18n.js?v=1"></script>
-  <script src="js/lang-ar.js?v=1"></script>
-  <script src="js/consult-app.js?v=1"></script>
+  <script src="../shared/js/time.js?v=1"></script>
+  <script src="js/lang-ar.js?v=2"></script>
+  <script src="js/consult-app.js?v=2"></script>
 </body>
 </html>

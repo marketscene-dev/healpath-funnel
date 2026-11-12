@@ -16,7 +16,7 @@
 
   <link rel="stylesheet" href="../shared/css/healpath-theme.css?v=6">
   <link rel="stylesheet" href="../shared/css/quiz-styles.css?v=6">
-  <link rel="stylesheet" href="css/consult.css?v=1">
+  <link rel="stylesheet" href="css/consult.css?v=2">
 </head>
 <body>
 
@@ -57,19 +57,28 @@
           <span class="hp-thanks__icon" aria-hidden="true">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
           </span>
-          <h1 class="hp-thanks__title" data-i18n>Your request is in</h1>
-          <p class="hp-thanks__lead" id="thanks-lead" data-i18n>We received your free consultation request.</p>
+          <h1 class="hp-thanks__title" data-i18n>Your time is on hold</h1>
+          <p class="hp-thanks__lead" id="thanks-lead" data-i18n>Create your free HealPath account to confirm your consultation.</p>
+
+          <dl class="hp-summary" id="booking-summary" hidden>
+            <div><dt data-i18n>Consultation</dt><dd id="sum-type"></dd></div>
+            <div><dt data-i18n>Date</dt><dd id="sum-day"></dd></div>
+            <div><dt data-i18n>Time</dt><dd id="sum-time"></dd></div>
+          </dl>
+          <p class="hp-hold" id="hold-note" hidden></p>
+          <p class="hp-slots__demo" id="demo-note" hidden data-i18n>Demo booking: not connected to the booking system yet.</p>
 
           <ol class="hp-steps">
-            <li><strong data-i18n>Send the WhatsApp message</strong><span data-i18n>It has your details ready. Just press send.</span></li>
-            <li><strong data-i18n>We confirm your time</strong><span data-i18n>Our team replies on WhatsApp to book a slot that suits you.</span></li>
+            <li><strong data-i18n>Create your free HealPath account</strong><span data-i18n>Sign up with the same mobile number you entered here. Your booking comes with you.</span></li>
+            <li><strong data-i18n>Your booking is confirmed instantly</strong><span data-i18n>As soon as your account is created, the time you picked is locked in.</span></li>
             <li><strong data-i18n>Meet your doctor</strong><span data-i18n>Your first consultation is free. No payment needed.</span></li>
           </ol>
 
-          <a id="btn-wa" class="hp-btn hp-btn--primary hp-btn--block" href="https://wa.me/201019003440" target="_blank" rel="noopener">
-            <span data-i18n>WhatsApp didn't open? Send it here</span>
+          <a id="btn-signin" class="hp-btn hp-btn--primary hp-btn--lg hp-btn--block" href="https://patient.healpath.care/">
+            <span data-i18n>Create my account to confirm</span>
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
           </a>
+          <p class="hp-existing" data-i18n>Already have a HealPath account? This offer is for new accounts only. You can book through your account or see our plans.</p>
         </div>
 
         <!-- Upsell to the subscription funnel -->
@@ -103,7 +112,8 @@
 
   <script src="../shared/js/tracking.js?v=1"></script>
   <script src="../shared/js/i18n.js?v=1"></script>
-  <script src="js/lang-ar.js?v=1"></script>
-  <script src="js/thanks.js?v=1"></script>
+  <script src="../shared/js/time.js?v=1"></script>
+  <script src="js/lang-ar.js?v=2"></script>
+  <script src="js/thanks.js?v=2"></script>
 </body>
 </html>

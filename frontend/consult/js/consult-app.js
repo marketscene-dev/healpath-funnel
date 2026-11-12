@@ -1,7 +1,8 @@
 /**
  * HealPath Free Consultation Funnel
  * 5 questions → we suggest a General or a Specialty consultation → the visitor
- * picks one (either is free) → short booking form → thanks.html.
+ * picks a date and time → slot held → thanks.html → creates a NEW HealPath
+ * account to confirm it (the free consultation is for new accounts only, one each).
  * Answers never leave the page except the chosen consultation type, which is
  * included in the booking message. Nothing health-related is sent to Meta.
  */
@@ -11,8 +12,14 @@
   // ---------------------------------------------------------------------------
   // SETTINGS — change these before going live
   // ---------------------------------------------------------------------------
-  const WHATSAPP_NUMBER = '201019003440'; // bookings arrive here while there is no backend
-  const BOOKING_ENDPOINT = '';            // set to a backend URL to POST bookings as JSON instead of WhatsApp
+  // Main booking system (see backend/BOOKING_API.md). While these are empty the funnel
+  // runs on DEMO slots and demo booking ids, and shows a "Demo times" notice.
+  const API_BASE = '';                         // e.g. 'https://booking.healpath.care/api'
+  const AVAILABILITY_URL = API_BASE && `${API_BASE}/availability`;
+  const HOLD_URL = API_BASE && `${API_BASE}/bookings/hold`;
+  const LEAD_URL = API_BASE && `${API_BASE}/leads`; // optional: saves name + phone as soon as they're entered
+  const DAYS_AHEAD = 14;
+  const HOLD_MINUTES = 15;                     // demo only; the real hold time comes from the API
 
   // TODO: confirm with HealPath which specialties are offered free.
   // ar = Arabic name used after "استشارة" (e.g. "استشارة جلدية").
@@ -148,9 +155,9 @@
   // ---------------------------------------------------------------------------
   // STATE & DOM
   // ---------------------------------------------------------------------------
-  const state = { index: 0, answers: {}, choice: null, spec: null, result: null };
+  const state = { index: 0, answers: {}, choice: null, spec: null, result: null, person: null, slot: null, day: null };
   const $ = (id) => document.getElementById(id);
-  const views = ['step-intro', 'step-quiz', 'step-emergency', 'step-loading', 'step-result'].map($);
+  const views = ['step-intro', 'step-details', 'step-quiz', 'step-emergency', 'step-loading', 'step-result'].map($);
 
   function show(id) {
     views.forEach((v) => v.classList.toggle('is-active', v.id === id));
@@ -182,7 +189,7 @@
     $('q-bar').style.width = `${pct}%`;
     $('q-title').textContent = t(q.title);
     $('q-subtitle').textContent = t(q.subtitle);
-    $('btn-back').hidden = state.index === 0;
+    $('btn-back').hidden = false; // on question 1 it goes back to the details step
 
     const wrap = $('q-options');
     wrap.innerHTML = '';
@@ -327,7 +334,8 @@
       renderChoices();
       $('spec-select').focus();
     });
-    $('btn-book').querySelector('span').textContent = isAr() ? `احجز ${choiceTitle()} مجانًا` : `Book my free ${choiceTitle().toLowerCase()}`;
+    loadSlots();
+    renderConfirm();
   }
 
   function renderResult() {
@@ -355,10 +363,8 @@
   }
 
   // ---------------------------------------------------------------------------
-  // BOOKING
+  // DETAILS (first step): name + phone, asked once
   // ---------------------------------------------------------------------------
-  const TIMES = { morning: 'Morning (9am – 12pm)', afternoon: 'Afternoon (12pm – 5pm)', evening: 'Evening (5pm – 10pm)' };
-
   // Egyptian mobile: 01x xxxx xxxx, with or without +20 / 0020.
   function normalisePhone(raw) {
     let d = String(raw).replace(/[^\d+]/g, '').replace(/^\+/, '').replace(/^00/, '');
@@ -373,13 +379,8 @@
     el.closest('.hp-field').classList.toggle('has-error', !!msg);
   }
 
-  function whatsappText(b) {
-    return isAr()
-      ? `مرحبًا HealPath، أود حجز استشارتي المجانية.\nنوع الاستشارة: ${choiceTitle()}\nالاسم: ${b.name}\nرقم الموبايل: ${b.phone}\nأفضل وقت للتواصل: ${t(TIMES[b.time])}`
-      : `Hello HealPath, I'd like to book my free consultation.\nConsultation: ${choiceTitle()}\nName: ${b.name}\nMobile: ${b.phone}\nBest time to call: ${TIMES[b.time]}`;
-  }
-
-  async function submit(e) {
+  let returnToResult = false;
+  function submitDetails(e) {
     e.preventDefault();
     const form = e.target;
     const field = (n) => form.elements.namedItem(n);
@@ -389,40 +390,197 @@
     setError('phone', phone ? '' : t('Please enter a valid Egyptian mobile number, e.g. 010 1234 5678.'));
     if (name.length < 2 || !phone) { form.querySelector('.has-error input').focus(); return; }
 
-    const booking = {
+    state.person = { name, phone, marketingConsent: field('marketing').checked };
+    // Save the lead straight away, so a visitor who stops mid-quiz can still be followed up.
+    if (LEAD_URL) {
+      fetch(LEAD_URL, { method: 'POST', headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(Object.assign({ source: 'free-consult-funnel', lang: L.lang }, state.person)), keepalive: true })
+        .catch((err) => console.warn('[consult] lead not saved', err));
+    }
+
+    if (returnToResult) { returnToResult = false; renderConfirm(); show('step-result'); return; }
+    state.index = 0;
+    renderQuestion();
+    show('step-quiz');
+  }
+
+  // ---------------------------------------------------------------------------
+  // AVAILABILITY — free slots from the main booking dashboard
+  // ---------------------------------------------------------------------------
+  const slots = { key: '', days: [], loading: false, error: false, demo: !AVAILABILITY_URL };
+  const slotKey = () => `${state.choice}:${state.choice === 'specialty' ? state.spec : ''}`;
+
+  async function fetchAvailability() {
+    const q = new URLSearchParams({ consultation: state.choice, from: HPTime.dayKey(Date.now()), days: String(DAYS_AHEAD) });
+    if (state.choice === 'specialty') q.set('specialty', state.spec);
+    const res = await fetch(`${AVAILABILITY_URL}?${q}`, { headers: { Accept: 'application/json' } });
+    if (!res.ok) throw new Error('Availability failed: ' + res.status);
+    const data = await res.json();
+    return data.slots || [];
+  }
+
+  // DEMO: stable fake slots (same answer every load) so the page can be tried without the API.
+  function demoAvailability() {
+    const out = [];
+    const today = HPTime.dayKey(Date.now());
+    const soonest = Date.now() + 60 * 60000;
+    let seed = 0;
+    for (const ch of slotKey()) seed = (seed * 31 + ch.charCodeAt(0)) % 9973;
+    for (let d = 0; d < DAYS_AHEAD; d++) {
+      const day = HPTime.addDays(today, d);
+      if (new Date(day + 'T12:00:00Z').getUTCDay() === 5) continue; // Friday off
+      for (let h = 10; h < 21; h++) {
+        for (const m of [0, 30]) {
+          const r = (seed + d * 53 + h * 17 + m) % 10;
+          const start = HPTime.cairoDate(day, h, m);
+          if (r < 5 && start.getTime() > soonest) out.push({ id: `demo_${day}_${h}${m}`, start: start.toISOString(), durationMin: 20 });
+        }
+      }
+    }
+    return out;
+  }
+
+  async function loadSlots(force) {
+    const key = slotKey();
+    if (!force && slots.key === key && (slots.loading || slots.days.length)) { renderSlots(); return; }
+    slots.key = key; slots.loading = true; slots.error = false;
+    state.slot = null;
+    renderSlots();
+    let list = [];
+    try {
+      list = AVAILABILITY_URL ? await fetchAvailability() : demoAvailability();
+    } catch (err) {
+      console.error(err);
+      if (slots.key === key) { slots.loading = false; slots.error = true; slots.days = []; renderSlots(); }
+      return;
+    }
+    if (slots.key !== key) return; // the visitor changed consultation meanwhile
+    const byDay = new Map();
+    list.sort((a, b) => new Date(a.start) - new Date(b.start)).forEach((sl) => {
+      const k = HPTime.dayKey(sl.start);
+      if (!byDay.has(k)) byDay.set(k, []);
+      byDay.get(k).push(sl);
+    });
+    slots.days = [...byDay.entries()].map(([day, items]) => ({ day, items }));
+    slots.loading = false;
+    if (!slots.days.find((d) => d.day === state.day)) state.day = slots.days.length ? slots.days[0].day : null;
+    renderSlots();
+  }
+
+  function renderSlots() {
+    $('slots-demo').hidden = !slots.demo;
+    const daysEl = $('slot-days');
+    const timesEl = $('slot-times');
+    const status = $('slots-status');
+    $('slot-error').textContent = '';
+
+    if (slots.loading) { daysEl.innerHTML = ''; timesEl.innerHTML = ''; status.textContent = t('Loading open times…'); renderConfirm(); return; }
+    if (slots.error) {
+      daysEl.innerHTML = ''; timesEl.innerHTML = '';
+      status.innerHTML = `${t('We couldn\'t load the open times.')} <button type="button" class="hp-btn-link hp-slots__retry">${t('Try again')}</button>`;
+      status.querySelector('button').addEventListener('click', () => loadSlots(true));
+      renderConfirm();
+      return;
+    }
+    if (!slots.days.length) { daysEl.innerHTML = ''; timesEl.innerHTML = ''; status.textContent = t('No open times in the next 2 weeks for this consultation. Try the other option above.'); renderConfirm(); return; }
+    status.textContent = '';
+
+    daysEl.innerHTML = slots.days.map(({ day, items }) => {
+      const on = day === state.day;
+      const ref = items[0].start;
+      return `<button type="button" role="radio" aria-checked="${on}" class="hp-day${on ? ' is-selected' : ''}" data-day="${day}">
+          <span class="hp-day__wd">${HPTime.weekday(ref, L.lang)}</span>
+          <strong class="hp-day__num">${HPTime.dayNum(ref, L.lang)}</strong>
+          <span class="hp-day__mon">${HPTime.month(ref, L.lang)}</span>
+        </button>`;
+    }).join('');
+    daysEl.querySelectorAll('.hp-day').forEach((b) => b.addEventListener('click', () => {
+      state.day = b.dataset.day; state.slot = null; renderSlots();
+    }));
+
+    const today = slots.days.find((d) => d.day === state.day);
+    timesEl.innerHTML = (today ? today.items : []).map((sl) => {
+      const on = state.slot && state.slot.id === sl.id;
+      return `<button type="button" role="radio" aria-checked="${!!on}" class="hp-time${on ? ' is-selected' : ''}" data-id="${sl.id}"${isAr() ? '' : ' dir="ltr"'}>${HPTime.time(sl.start, L.lang)}</button>`;
+    }).join('');
+    timesEl.querySelectorAll('.hp-time').forEach((b) => b.addEventListener('click', () => {
+      state.slot = today.items.find((x) => x.id === b.dataset.id);
+      renderSlots();
+    }));
+    renderConfirm();
+  }
+
+  // Summary above the Book button
+  function renderConfirm() {
+    const btn = $('btn-book');
+    btn.querySelector('span').textContent = isAr() ? `احجز ${choiceTitle()} مجانًا` : `Book my free ${choiceTitle().toLowerCase()}`;
+    $('book-summary').innerHTML = state.slot
+      ? `<strong>${choiceTitle()}</strong><span>${HPTime.longDay(state.slot.start, L.lang)} · <bdi>${HPTime.time(state.slot.start, L.lang)}</bdi></span>`
+      : `<span>${t('Pick a time above to continue.')}</span>`;
+    const p = state.person;
+    $('book-who').innerHTML = p
+      ? `${t('Booking for')} <strong><bdi>${p.name.replace(/[<>&"]/g, '')}</bdi></strong> · <bdi dir="ltr">${p.phone}</bdi> <button type="button" class="hp-btn-link" id="btn-edit-details">${t('Change')}</button>`
+      : '';
+    const edit = $('btn-edit-details');
+    if (edit) edit.addEventListener('click', () => { returnToResult = true; show('step-details'); });
+  }
+
+  // ---------------------------------------------------------------------------
+  // BOOK — hold the slot in the main booking system, then thanks.html → create account
+  // ---------------------------------------------------------------------------
+  async function book() {
+    if (!state.slot) {
+      $('slot-error').textContent = t('Please pick a date and time.');
+      $('slot-picker').scrollIntoView({ behavior: 'smooth', block: 'center' });
+      return;
+    }
+    const request = Object.assign({
+      slotId: state.slot.id,
+      source: 'free-consult-funnel',
       consultation: state.choice,                                   // 'general' | 'specialty'
       specialty: state.choice === 'specialty' ? state.spec : null,
       for: opt('who').value,
-      name, phone,
-      time: field('time').value,
-      marketingConsent: field('marketing').checked,
       lang: L.lang
-    };
+    }, state.person);                                               // name, phone, marketingConsent
 
     const btn = $('btn-book');
     btn.disabled = true;
-    let waUrl = '';
+    let held;
     try {
-      if (BOOKING_ENDPOINT) {
-        const res = await fetch(BOOKING_ENDPOINT, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(booking) });
-        if (!res.ok) throw new Error('Booking failed: ' + res.status);
+      if (HOLD_URL) {
+        const res = await fetch(HOLD_URL, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(request) });
+        const data = await res.json().catch(() => ({}));
+        if (res.status === 409) {
+          btn.disabled = false;
+          if (data.error === 'already_used') { $('slot-error').textContent = t('This number has already used its free consultation.'); return; }
+          if (data.error === 'existing_account') { $('slot-error').textContent = t('This number already has a HealPath account. The free consultation is for new accounts only.'); return; }
+          $('slot-error').textContent = t('That time was just taken. Please pick another.');
+          loadSlots(true);
+          return;
+        }
+        if (!res.ok || !data.bookingId) throw new Error('Hold failed: ' + res.status);
+        held = data;
       } else {
-        waUrl = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(whatsappText(booking))}`;
-        window.open(waUrl, '_blank', 'noopener');
+        console.warn('[consult] DEMO booking: API_BASE is empty, so nothing was held in the booking system.', request);
+        held = { bookingId: 'demo_' + Math.random().toString(36).slice(2, 10), start: state.slot.start,
+          holdExpiresAt: new Date(Date.now() + HOLD_MINUTES * 60000).toISOString(), demo: true };
       }
     } catch (err) {
       console.error(err);
       btn.disabled = false;
-      setError('phone', t('Something went wrong. Please try again, or message us on WhatsApp.'));
+      $('slot-error').textContent = t('Something went wrong. Please try again, or message us on WhatsApp.');
       return;
     }
 
-    // thanks.html fires the Meta "Lead" event once (no health details).
+    // thanks.html fires the Meta "Lead" event once (no health details), shows the
+    // booking and sends the visitor to sign-up to confirm it.
     try {
       sessionStorage.setItem('hp-lead', '1');
       const en = state.choice === 'general' ? 'General consultation' : `${SPECIALTIES[state.spec].name} consultation`;
       const ar = state.choice === 'general' ? window.HP_CONSULT_AR['General consultation'] : `استشارة ${SPECIALTIES[state.spec].ar}`;
-      sessionStorage.setItem('hp-booking', JSON.stringify({ en, ar, wa: waUrl }));
+      sessionStorage.setItem('hp-booking', JSON.stringify({
+        en, ar, bookingId: held.bookingId, start: held.start || state.slot.start, holdExpiresAt: held.holdExpiresAt || null, demo: !!held.demo
+      }));
     } catch (err) { /* storage blocked */ }
     location.href = `thanks.html?lang=${L.lang}`;
   }
@@ -430,20 +588,28 @@
   // ---------------------------------------------------------------------------
   // EVENTS
   // ---------------------------------------------------------------------------
-  function start() { state.index = 0; renderQuestion(); show('step-quiz'); }
-  function restart() { state.index = 0; state.answers = {}; state.result = null; show('step-intro'); }
+  function restart() {
+    state.index = 0; state.answers = {}; state.result = null; state.slot = null;
+    show('step-intro');
+  }
 
-  $('btn-start').addEventListener('click', start);
-  $('btn-back').addEventListener('click', () => { if (state.index > 0) { state.index -= 1; renderQuestion(); } });
+  // Start: ask for details once; if we already have them, go straight to the quiz.
+  $('btn-start').addEventListener('click', () => {
+    if (state.person) { state.index = 0; renderQuestion(); show('step-quiz'); } else { show('step-details'); }
+  });
+  $('details-form').addEventListener('submit', submitDetails);
+  ['name', 'phone'].forEach((n) => $('details-form').elements.namedItem(n).addEventListener('input', () => setError(n, '')));
+  $('btn-back').addEventListener('click', () => {
+    if (state.index > 0) { state.index -= 1; renderQuestion(); } else { show('step-details'); }
+  });
   $('btn-emergency-back').addEventListener('click', () => { delete state.answers.impact; renderQuestion(); show('step-quiz'); });
   $('btn-retake').addEventListener('click', restart);
   $('logo-home').addEventListener('click', (e) => { e.preventDefault(); restart(); });
-  $('book-form').addEventListener('submit', submit);
-  ['name', 'phone'].forEach((n) => $('book-form').elements.namedItem(n).addEventListener('input', () => setError(n, '')));
+  $('btn-book').addEventListener('click', book);
 
   // Language: re-render the open step in place when it changes.
   L.init(() => {
     if ($('step-quiz').classList.contains('is-active')) renderQuestion(false);
-    if ($('step-result').classList.contains('is-active')) renderResult();
+    if ($('step-result').classList.contains('is-active')) { renderResult(); renderSlots(); }
   });
 })();

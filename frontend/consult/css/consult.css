@@ -136,3 +136,62 @@
   .hp-upsell { flex-direction: column; align-items: flex-start; padding: 20px; }
   .hp-upsell .hp-btn { width: 100%; }
 }
+
+/* ---------- Details step (first) ---------- */
+.hp-form--first { margin-top: 24px; padding-top: 0; border-top: 0; }
+.hp-form--first .hp-form__grid { margin-top: 0; }
+
+/* ---------- Date & time picker ---------- */
+.hp-slots { margin-top: 34px; padding-top: 30px; border-top: 1px solid var(--hp-border); }
+.hp-slots__sub { margin-top: 4px; font-size: 13px; color: var(--hp-muted); }
+.hp-slots__demo {
+  margin-top: 12px; padding: 8px 12px; font-size: 12px; font-weight: 600;
+  color: #8A6417; background: #FFF8EC; border: 1px solid #F6E2BC; border-radius: 10px;
+}
+.hp-slots__demo[hidden] { display: none; }
+.hp-days {
+  display: flex; gap: 10px; margin: 18px -4px 0; padding: 4px 4px 10px;
+  overflow-x: auto; scroll-snap-type: x proximity; -webkit-overflow-scrolling: touch;
+}
+.hp-day {
+  flex: none; display: flex; flex-direction: column; align-items: center; gap: 2px;
+  width: 72px; padding: 10px 6px; scroll-snap-align: start;
+  font-family: var(--hp-font); color: var(--hp-navy); cursor: pointer;
+  background: var(--hp-surface-soft); border: 1.5px solid var(--hp-border); border-radius: 14px;
+  transition: border-color .2s, background .2s, box-shadow .2s;
+}
+.hp-day__wd, .hp-day__mon { font-size: 11px; font-weight: 600; color: var(--hp-muted); }
+.hp-day__num { font-size: 22px; font-weight: 800; line-height: 1.1; }
+.hp-day.is-selected { color: #fff; background: var(--hp-grad-cta); border-color: transparent; box-shadow: var(--hp-shadow-pill); }
+.hp-day.is-selected .hp-day__wd, .hp-day.is-selected .hp-day__mon { color: rgba(255, 255, 255, .9); }
+.hp-times { display: grid; grid-template-columns: repeat(auto-fill, minmax(96px, 1fr)); gap: 10px; margin-top: 14px; }
+.hp-time {
+  min-height: 44px; font-family: var(--hp-font); font-size: 14px; font-weight: 700; color: var(--hp-navy);
+  background: #fff; border: 1.5px solid var(--hp-border); border-radius: 12px; cursor: pointer;
+  transition: border-color .2s, background .2s, color .2s;
+}
+.hp-time.is-selected { color: #fff; background: var(--hp-teal); border-color: var(--hp-teal); }
+.hp-day:focus-visible, .hp-time:focus-visible { outline: 3px solid rgba(17, 175, 203, .45); outline-offset: 2px; }
+.hp-slots__status { margin-top: 12px; font-size: 14px; color: var(--hp-muted); }
+.hp-slots__status:empty, .hp-slots__error:empty { display: none; }
+.hp-slots__retry { padding: 0 4px; color: var(--hp-teal-dark); }
+.hp-slots__error { margin-top: 10px; font-size: 13px; font-weight: 600; color: var(--hp-no); }
+
+/* ---------- Confirm & book ---------- */
+.hp-confirm { margin-top: 28px; padding-top: 24px; border-top: 1px solid var(--hp-border); }
+.hp-confirm__summary { display: flex; flex-direction: column; gap: 2px; margin-bottom: 6px; font-size: 14px; color: var(--hp-muted); }
+.hp-confirm__summary strong { font-size: 17px; color: var(--hp-navy); }
+.hp-confirm__who { margin-bottom: 16px; font-size: 13px; color: var(--hp-muted); }
+.hp-confirm__who:empty { display: none; }
+.hp-confirm__who .hp-btn-link { padding: 0 4px; font-size: 13px; color: var(--hp-teal-dark); }
+
+/* ---------- Thanks: held booking ---------- */
+.hp-summary { display: grid; gap: 1px; margin: 24px 0 0; overflow: hidden; text-align: start; background: var(--hp-border); border: 1px solid var(--hp-border); border-radius: var(--hp-r-sm); }
+.hp-summary[hidden] { display: none; }
+.hp-summary div { display: flex; justify-content: space-between; gap: 16px; padding: 12px 16px; background: var(--hp-surface-soft); }
+.hp-summary dt { font-size: 13px; color: var(--hp-muted); }
+.hp-summary dd { margin: 0; font-size: 14px; font-weight: 700; color: var(--hp-navy); text-align: end; }
+.hp-hold { margin-top: 14px; padding: 10px 14px; font-size: 13px; font-weight: 600; color: var(--hp-teal-dark); background: var(--hp-info-bg); border-radius: 10px; }
+.hp-hold[hidden] { display: none; }
+#demo-note { margin-top: 10px; }
+.hp-existing { margin-top: 14px; font-size: 12px; line-height: 1.6; color: var(--hp-muted); }
