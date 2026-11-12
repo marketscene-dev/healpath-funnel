@@ -26,11 +26,18 @@ frontend/
 │   └── js/
 │       ├── quiz-app.js             # Bundles, branching questions, scoring, result rendering, language switch
 │       └── lang-ar.js              # Arabic copy, keyed by the English text
-├── consult/                        # Free consultation funnel (coming next)
+├── consult/                        # Free consultation funnel (see consult/README.md)
+│   ├── index.html                  # Intro → quiz → suggestion → pick general/specialty → book
+│   ├── thanks.html                 # Booking received + plan upsell
+│   ├── css/consult.css
+│   └── js/                         # consult-app.js, thanks.js, lang-ar.js
 ├── shared/                         # Used by both funnels
 │   ├── css/
 │   │   ├── healpath-theme.css      # Brand tokens (Poppins, navy, teal, radii, shadows)
 │   │   └── quiz-styles.css         # Funnel components, responsive layout, Arabic / RTL
+│   ├── js/
+│   │   ├── i18n.js                 # English / Arabic switch (used by consult/)
+│   │   └── tracking.js             # Meta Pixel, off until PIXEL_ID is set
 │   └── images/
 │       ├── healpath-logo.png
 │       └── healpath-logo-white.png
